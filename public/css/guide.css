@@ -1,0 +1,172 @@
+/* Guide Portal Styles */
+.guide-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.stat-icon.bg-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.stat-icon.bg-success {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+}
+
+.stat-icon.bg-warning {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.stat-icon.bg-info {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.content-section {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.schedule-item {
+    border-left: 4px solid #667eea;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+}
+
+.schedule-item:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transform: translateX(5px);
+}
+
+.review-item {
+    padding: 20px;
+    margin-bottom: 15px;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #fbbf24;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.star-rating {
+    color: #fbbf24;
+    font-size: 1.2rem;
+}
+
+.booking-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: white;
+    transition: all 0.3s;
+}
+
+.booking-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.chờ-thanh-toán {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.đã-thanh-toán {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.đã-hủy {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.certificate-item {
+    border-left: 4px solid #667eea;
+    transition: all 0.3s;
+}
+
+.certificate-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.certificate-item.border-warning {
+    border-left-color: #fbbf24;
+}
+
+.certificates-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.certificate-upload-section {
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #f9fafb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+    }
+    
+    .sidebar.show {
+        transform: translateX(0);
+    }
+}
+

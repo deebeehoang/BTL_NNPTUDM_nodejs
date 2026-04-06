@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-Travel - Lịch Sử Đặt Tour</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Modern Navbar - Gradient Purple to Blue (giống trang chủ) */
+        .navbar {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: none;
+            padding: 1rem 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar.scrolled {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #2563eb 100%) !important;
+            box-shadow: 0 6px 30px rgba(139, 92, 246, 0.4);
+            padding: 0.75rem 0;
+            backdrop-filter: blur(25px);
+        }
+
+        /* Logo D-Travel với chữ D trong vòng tròn */
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .logo-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover .logo-circle {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(360deg);
+        }
+
+        .brand-text {
+            color: white;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Menu chính */
+        .navbar-nav {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9) !important;
+            padding: 0.75rem 1.25rem !important;
+            margin: 0 0.25rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 1px;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .navbar-nav .nav-link:hover::after {
+            width: 80%;
+        }
+
+        /* Góc phải - Auth buttons */
+        .welcome-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .welcome-text i {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary.btn-sm {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-outline-primary.btn-sm:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn-primary.btn-sm {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary.btn-sm:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-outline-danger.btn-sm {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-outline-danger.btn-sm:hover {
+            background: rgba(255, 77, 77, 0.3);
+            color: white;
+            border-color: rgba(255, 77, 77, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .dropdown-menu {
+            border-radius: 0.75rem;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: white;
+        }
+
+        .page-title i {
+            font-size: 2rem;
+            color: #ffd93d;
+        }
+
+        .page-title h1 {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .btn-home {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+        }
+
+        .btn-profile {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-header:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tour Grid */
+        .tours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tour-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .tour-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .card-header.status-success {
+            background: linear-gradient(135deg, #a8e6cf 0%, #56ab2f 100%);
+        }
+
+        .card-header.status-expired {
+            background: linear-gradient(135deg, #ffb3ba 0%, #ff6b6b 100%);
+        }
+
+        .card-header.status-pending {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+        }
+
+        .card-header.status-cancelled {
+            background: linear-gradient(135deg, #d3d3d3 0%, #a0a0a0 100%);
+        }
+
+        .tour-id {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .tour-number {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .status-badge.success {
+            background: rgba(255, 255, 255, 0.9);
+            color: #2d8659;
+        }
+
+        .status-badge.expired {
+            background: rgba(255, 255, 255, 0.9);
+            color: #c92a2a;
+        }
+
+        .status-badge.pending {
+            background: rgba(255, 255, 255, 0.9);
+            color: #856404;
+        }
+
+        .status-badge.cancelled {
+            background: rgba(255, 255, 255, 0.9);
+            color: #495057;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .alert {
+            background: #fff5f5;
+            border: 1px solid #ff6b6b;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: start;
+            gap: 0.8rem;
+        }
+
+        .alert i {
+            color: #ff6b6b;
+            margin-top: 0.2rem;
+        }
+
+        .alert-text {
+            font-size: 0.9rem;
+            color: #c92a2a;
+            line-height: 1.5;
+        }
+
+        .countdown-timer {
+            background: #fff5f5;
+            border: 1px solid #ff6b6b;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: start;
+            gap: 0.8rem;
+        }
+
+        .countdown-timer.bg-warning {
+            background: #fffbf0;
+            border-color: #ffc107;
+        }
+
+        .tour-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #495057;
+        }
+
+        .detail-item i {
+            width: 20px;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .detail-text {
+            font-size: 0.95rem;
+        }
+
+        .booking-code {
+            background: #f8f9fa;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #495057;
+            margin-top: 0.5rem;
+        }
+
+        .card-footer {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .price-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .price-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .booking-date {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 0.7rem 1.2rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-info {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-rate {
+            background: #ffd93d;
+            color: #333;
+        }
+
+        .btn-cancel {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-payment {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-action:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status-icon {
+            margin-left: 0.3rem;
+        }
+
+        #loading-spinner {
+            text-align: center;
+            padding: 3rem;
+            color: white;
+        }
+
+        #no-bookings, #not-logged-in {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            color: white;
+            margin-top: 2rem;
+        }
+
+        #no-bookings i, #not-logged-in i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        #no-bookings h4, #not-logged-in h4 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        #no-bookings p, #not-logged-in p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .tours-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .card-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="page-title">
+                <i class="fas fa-history"></i>
+                <h1>Lịch Sử Đặt Tour</h1>
+            </div>
+            <div class="header-actions">
+                <a href="index.html" class="btn-header btn-home">
+                    <i class="fas fa-home"></i> Trang chủ
+                </a>
+                <a href="profile.html" class="btn-header btn-profile">
+                    <i class="fas fa-user-circle"></i> Hồ sơ cá nhân
+                </a>
+            </div>
+        </div>
+
+        <div id="loading-spinner" class="text-center py-5">
+            <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Đang tải...</span>
+            </div>
+            <p class="mt-3 text-white">Đang tải lịch sử đặt tour...</p>
+        </div>
+
+        <div id="bookings-container" class="tours-grid d-none">
+            <!-- Các booking sẽ được thêm vào đây bằng JavaScript -->
+        </div>
+
+        <div id="no-bookings" class="d-none">
+            <i class="fas fa-calendar-times"></i>
+            <h4>Bạn chưa có tour nào đã đặt</h4>
+            <p>Hãy khám phá và đặt tour để bắt đầu hành trình của bạn</p>
+            <a href="alltour.html" class="btn btn-primary mt-3" style="background: white; color: #667eea;">
+                <i class="fas fa-search"></i> Khám phá tour
+            </a>
+        </div>
+
+        <div id="not-logged-in" class="d-none">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h4>Vui lòng đăng nhập để xem lịch sử đặt tour</h4>
+            <div class="mt-4">
+                <a href="login.html" class="btn btn-primary me-2" style="background: white; color: #667eea;">
+                    <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                </a>
+                <a href="register.html" class="btn btn-outline-primary" style="border-color: white; color: white;">
+                    <i class="fas fa-user-plus"></i> Đăng ký
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal yêu cầu hủy tour -->
+    <div class="modal fade" id="cancelRequestModal" tabindex="-1" aria-labelledby="cancelRequestModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title" id="cancelRequestModalLabel">
+                        <i class="fas fa-calendar-times me-2"></i>Yêu Cầu Hủy Tour
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="cancel-request-form">
+                        <input type="hidden" id="booking-id" name="Ma_booking">
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Lưu ý:</strong> Yêu cầu hủy tour sẽ được xem xét bởi admin. 
+                            Bạn sẽ nhận được thông báo khi yêu cầu được xử lý.
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="cancel-reason" class="form-label">Lý do hủy <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="cancel-reason" name="Ly_do" rows="3" required
+                                placeholder="Vui lòng chia sẻ lý do bạn muốn hủy tour..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Đóng
+                    </button>
+                    <button type="button" class="btn btn-danger" id="submit-cancel-request">
+                        <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal chi tiết yêu cầu hủy -->
+    <div class="modal fade" id="cancelRequestDetailModal" tabindex="-1" aria-labelledby="cancelRequestDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelRequestDetailModalLabel">
+                        <i class="fas fa-info-circle me-2"></i>Chi Tiết Yêu Cầu Hủy
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="cancel-request-details">
+                    <!-- Chi tiết yêu cầu hủy sẽ được thêm vào đây bằng JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/client/my-bookings.js"></script>
+    <script src="/js/user-block-notification.js"></script>
+</body>
+</html>

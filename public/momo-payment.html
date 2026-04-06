@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán MoMo - D-Travel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .payment-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .payment-header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .payment-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .payment-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .payment-content {
+            padding: 40px;
+        }
+        
+        .booking-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .info-value {
+            color: #212529;
+        }
+        
+        .amount-display {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .amount-label {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        
+        .amount-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #dc3545;
+        }
+        
+        .payment-methods {
+            margin: 30px 0;
+        }
+        
+        .method-card {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .method-card:hover {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+        
+        .method-card.selected {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+        
+        .method-icon {
+            font-size: 2rem;
+            color: #ff6b6b;
+            margin-right: 15px;
+        }
+        
+        .method-info h5 {
+            margin: 0;
+            color: #212529;
+        }
+        
+        .method-info p {
+            margin: 5px 0 0 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .qr-code-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        .qr-code {
+            max-width: 200px;
+            margin: 0 auto 15px;
+        }
+        
+        .payment-actions {
+            margin-top: 30px;
+        }
+        
+        .btn-pay {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+            color: white;
+        }
+        
+        .btn-pay:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .status-message {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="payment-container">
+            <div class="payment-header">
+                <h1><i class="fas fa-mobile-alt me-2"></i>Thanh toán MoMo</h1>
+                <p>Thanh toán nhanh chóng và an toàn với ví MoMo</p>
+            </div>
+            
+            <div class="payment-content">
+                <!-- Booking Information -->
+                <div class="booking-info" id="bookingInfo">
+                    <h5><i class="fas fa-info-circle me-2"></i>Thông tin đặt tour</h5>
+                    <div class="info-row">
+                        <span class="info-label">Mã booking:</span>
+                        <span class="info-value" id="bookingId">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Tên tour:</span>
+                        <span class="info-value" id="tourName">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Ngày khởi hành:</span>
+                        <span class="info-value" id="departureDate">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Số khách:</span>
+                        <span class="info-value" id="guestCount">-</span>
+                    </div>
+                </div>
+                
+                <!-- Amount Display -->
+                <div class="amount-display">
+                    <div class="amount-label">Số tiền thanh toán</div>
+                    <div class="amount-value" id="amount">0đ</div>
+                </div>
+                
+                <!-- Payment Methods -->
+                <div class="payment-methods">
+                    <h5><i class="fas fa-credit-card me-2"></i>Phương thức thanh toán</h5>
+                    
+                    <div class="method-card selected" data-method="momo">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-mobile-alt method-icon"></i>
+                            <div class="method-info">
+                                <h5>Ví MoMo</h5>
+                                <p>Thanh toán qua ứng dụng MoMo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- QR Code Container -->
+                <div class="qr-code-container" id="qrCodeContainer" style="display: none;">
+                    <h5><i class="fas fa-qrcode me-2"></i>Quét mã QR để thanh toán</h5>
+                    <img id="qrCodeImage" class="qr-code" src="" alt="QR Code">
+                    <p class="text-muted">Hoặc nhấn nút bên dưới để mở ứng dụng MoMo</p>
+                </div>
+                
+                <!-- Status Messages -->
+                <div id="statusMessage" class="status-message" style="display: none;"></div>
+                
+                <!-- Loading Spinner -->
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Đang xử lý...</span>
+                    </div>
+                    <p class="mt-2">Đang tạo giao dịch thanh toán...</p>
+                </div>
+                
+                <!-- Payment Actions -->
+                <div class="payment-actions">
+                    <button class="btn btn-pay" id="payButton" onclick="createMoMoPayment()">
+                        <i class="fas fa-mobile-alt me-2"></i>Thanh toán với MoMo
+                    </button>
+                    <div class="text-center mt-3">
+                        <a href="/my-bookings.html" class="text-muted">
+                            <i class="fas fa-arrow-left me-1"></i>Quay lại danh sách booking
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/config.js"></script>
+    <script>
+        // Global variables
+        let currentBooking = null;
+        let paymentData = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBookingData();
+        });
+
+        // Load booking data from URL parameters
+        function loadBookingData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookingId = urlParams.get('bookingId');
+            const amount = urlParams.get('amount');
+
+            if (!bookingId || !amount) {
+                showStatusMessage('error', 'Thiếu thông tin booking hoặc số tiền');
+                return;
+            }
+
+            // Set booking data
+            currentBooking = {
+                bookingId: bookingId,
+                amount: parseInt(amount)
+            };
+
+            // Update UI
+            document.getElementById('bookingId').textContent = bookingId;
+            document.getElementById('amount').textContent = formatCurrency(amount);
+
+            // Load detailed booking info
+            loadBookingDetails(bookingId);
+        }
+
+        // Load detailed booking information
+        async function loadBookingDetails(bookingId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${CONFIG.API_BASE_URL}/bookings/${bookingId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        updateBookingInfo(data.data.booking);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading booking details:', error);
+            }
+        }
+
+        // Update booking information in UI
+        function updateBookingInfo(booking) {
+            document.getElementById('tourName').textContent = booking.tour?.Ten_tour || 'Tour';
+            document.getElementById('departureDate').textContent = 
+                booking.lich?.Ngay_bat_dau ? 
+                new Date(booking.lich.Ngay_bat_dau).toLocaleDateString('vi-VN') : '-';
+            
+            const guestCount = `${booking.So_nguoi_lon} người lớn, ${booking.So_tre_em} trẻ em`;
+            document.getElementById('guestCount').textContent = guestCount;
+        }
+
+        // Create MoMo payment
+        async function createMoMoPayment() {
+            if (!currentBooking) {
+                showStatusMessage('error', 'Không có thông tin booking');
+                return;
+            }
+
+            const payButton = document.getElementById('payButton');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const statusMessage = document.getElementById('statusMessage');
+
+            // Show loading
+            payButton.disabled = true;
+            loadingSpinner.style.display = 'block';
+            statusMessage.style.display = 'none';
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${CONFIG.API_BASE_URL}/payment/momo/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        bookingId: currentBooking.bookingId,
+                        amount: currentBooking.amount,
+                        orderInfo: `Thanh toán tour ${currentBooking.bookingId}`
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    paymentData = data.data;
+                    showPaymentOptions(data.data);
+                    showStatusMessage('success', 'Tạo giao dịch thành công! Vui lòng chọn phương thức thanh toán.');
+                } else {
+                    showStatusMessage('error', data.message || 'Không thể tạo giao dịch thanh toán');
+                }
+            } catch (error) {
+                console.error('Error creating MoMo payment:', error);
+                showStatusMessage('error', 'Lỗi khi tạo giao dịch thanh toán');
+            } finally {
+                payButton.disabled = false;
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        // Show payment options
+        function showPaymentOptions(paymentData) {
+            const qrCodeContainer = document.getElementById('qrCodeContainer');
+            const qrCodeImage = document.getElementById('qrCodeImage');
+            const payButton = document.getElementById('payButton');
+
+            if (paymentData.qrCodeUrl) {
+                qrCodeImage.src = paymentData.qrCodeUrl;
+                qrCodeContainer.style.display = 'block';
+            }
+
+            // Update pay button to open MoMo app
+            payButton.innerHTML = '<i class="fas fa-external-link-alt me-2"></i>Mở ứng dụng MoMo';
+            payButton.onclick = () => openMoMoApp(paymentData.payUrl);
+        }
+
+        // Open MoMo app
+        function openMoMoApp(payUrl) {
+            if (payUrl) {
+                window.open(payUrl, '_blank');
+            }
+        }
+
+        // Show status message
+        function showStatusMessage(type, message) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.className = `status-message status-${type}`;
+            statusMessage.textContent = message;
+            statusMessage.style.display = 'block';
+
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,755 @@
+General Styles
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--dark-color);
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+/* User welcome in navbar */
+#userMenu .text-light {
+    background-color: rgba(13, 110, 253, 0.2);
+    border-radius: 4px;
+    padding: 5px 10px;
+    border-left: 3px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+#userMenu #userName {
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('../images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    margin-top: -56px;
+}
+
+.hero-content {
+    max-width: 800px;
+    padding: 2rem;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.search-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Sections */
+.section {
+    padding: 5rem 0;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-weight: 700;
+}
+
+/* Destinations Section */
+.destinations .section-title {
+    color: #333;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.destinations .section-description {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+/* Tour Cards */
+.tour-card {
+    transition: all 0.3s ease;
+    border: none;
+    overflow: hidden;
+}
+
+.tour-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.tour-card .card-title {
+    font-weight: 600;
+    color: #333;
+}
+
+.tour-image {
+    transition: all 0.5s ease;
+}
+
+.tour-card:hover .tour-image {
+    transform: scale(1.05);
+}
+
+.tour-info {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.tour-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.tour-card:hover .tour-overlay {
+    opacity: 1;
+}
+
+.tour-detail-image img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Destination Cards */
+.destination-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.destination-card:hover {
+    transform: translateY(-5px);
+}
+
+.destination-image {
+    height: 200px;
+    object-fit: cover;
+}
+
+.destination-card .card-body {
+    padding: 1.5rem;
+}
+
+.destination-card .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.destination-card .card-text {
+    color: #666;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.destination-card .btn {
+    background-color: #fff;
+    color: #007bff;
+    border: 2px solid #007bff;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.destination-card .btn:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Service Cards */
+.service-card {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+    transition: transform 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.service-card i {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+/* Contact Section */
+.contact-info {
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.contact-info i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+/* Footer */
+.footer {
+    background: var(--dark-color);
+    color: white;
+    padding: 4rem 0 2rem;
+}
+
+.footer h3 {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+.social-links a {
+    color: white;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    text-decoration: none;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .section {
+        padding: 3rem 0;
+    }
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 8px;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+/* Form Styles */
+.form-control {
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+/* Hiệu ứng loading */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="%230d6efd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>') no-repeat center center;
+    z-index: 9999;
+    pointer-events: all;
+    cursor: wait;
+}
+
+.tour-carousel-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.tour-carousel {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    scroll-behavior: smooth;
+}
+
+.tour-item {
+    min-width: 320px;
+    max-width: 320px;
+    margin: 0 8px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px #eee;
+    flex-shrink: 0;
+}
+
+.carousel-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.carousel-btn.left {
+    margin-right: 8px;
+}
+
+.carousel-btn.right {
+    margin-left: 8px;
+}
+
+/* Tour Carousel Styles */
+#tourCarousel {
+    margin: 2rem 0;
+    padding: 1rem;
+}
+
+#tourCarousel .carousel-inner {
+    padding: 1rem 0;
+}
+
+#tourCarousel .carousel-item {
+    transition: transform 0.6s ease-in-out;
+}
+
+#tourCarousel .carousel-item.active {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+#tourCarousel .card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 350px;
+    margin: 0 0.5rem;
+}
+
+#tourCarousel .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+#tourCarousel .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px 15px 0 0;
+}
+
+#tourCarousel .card-body {
+    padding: 1.5rem;
+}
+
+#tourCarousel .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+#tourCarousel .card-text {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+#tourCarousel .carousel-control-prev,
+#tourCarousel .carousel-control-next {
+    width: 50px;
+    height: 50px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+#tourCarousel .carousel-control-prev:hover,
+#tourCarousel .carousel-control-next:hover {
+    opacity: 1;
+}
+
+#tourCarousel .carousel-control-prev {
+    left: -25px;
+}
+
+#tourCarousel .carousel-control-next {
+    right: -25px;
+}
+
+#tourCarousel .carousel-indicators {
+    bottom: -40px;
+}
+
+#tourCarousel .carousel-indicators button {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0 5px;
+    background-color: #dee2e6;
+    border: none;
+}
+
+#tourCarousel .carousel-indicators button.active {
+    background-color: var(--bs-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    #tourCarousel .card {
+        width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    #tourCarousel .carousel-item.active {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    #tourCarousel .card {
+        width: 100%;
+        max-width: 350px;
+        margin: 0.5rem 0;
+    }
+    
+    #tourCarousel .carousel-control-prev,
+    #tourCarousel .carousel-control-next {
+        display: none;
+    }
+}
+
+/* Carousel Tour Nổi Bật */
+.carousel {
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.carousel-inner {
+    padding: 1rem;
+    background-color: #f8f9fa;
+}
+
+.carousel-item {
+    padding: 1rem;
+}
+
+.carousel-item .card {
+    transition: transform 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.carousel-item .card:hover {
+    transform: translateY(-5px);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+    opacity: 0.8;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.carousel-indicators {
+    margin-bottom: 0.5rem;
+}
+
+.carousel-indicators button {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0 5px;
+    background-color: #6c757d;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicators button.active {
+    opacity: 1;
+    background-color: #0d6efd;
+    transform: scale(1.2);
+}
+
+/* Animation cho tour card */
+.animate__animated {
+    animation-duration: 0.5s;
+}
+
+.animate__fadeIn {
+    animation-name: fadeIn;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive cho carousel */
+@media (max-width: 768px) {
+    .carousel-item .col-lg-8 {
+        padding: 0 1rem;
+    }
+    
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 10%;
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-inner {
+        padding: 0.5rem;
+    }
+    
+    .carousel-item {
+        padding: 0.5rem;
+    }
+    
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 15%;
+    }
+}
+
+/* Tour Grid Styles */
+.tour-grid-container {
+    position: relative;
+    padding: 0 50px;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 100%;
+}
+
+.tour-grid {
+    display: flex;
+    gap: 25px;
+    transition: transform 0.5s ease;
+    width: 100%;
+}
+
+.tour-card {
+    flex: 0 0 calc(33.333% - 17px); /* Chiều rộng của mỗi card (3 card + 2 gap) */
+    min-width: calc(33.333% - 17px);
+    opacity: 1;
+    transition: all 0.5s ease;
+    margin-right: 0;
+}
+
+.tour-card.sliding {
+    opacity: 0.5;
+}
+
+.tour-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.tour-nav-btn:hover {
+    background: #0b5ed7;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.tour-nav-btn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.tour-nav-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: translateY(-50%);
+}
+
+.tour-nav-prev {
+    left: 0;
+}
+
+.tour-nav-next {
+    right: 0;
+}
+
+.tour-nav-btn i {
+    font-size: 1.2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .tour-card {
+        flex: 0 0 calc(50% - 13px); /* 2 card + 1 gap */
+        min-width: calc(50% - 13px);
+    }
+}
+
+@media (max-width: 768px) {
+    .tour-grid-container {
+        padding: 0 40px;
+    }
+    
+    .tour-card {
+        flex: 0 0 100%; /* 1 card */
+        min-width: 100%;
+    }
+    
+    .tour-nav-btn {
+        width: 35px;
+        height: 35px;
+    }
+    #contact .card {
+        border-radius: 10px;
+        padding: 20px;
+        background-color: #ffffff;
+        transition: all 0.3s ease;
+      }
+      
+      #contact .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      }
+      
+      #contact h5 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      #contact i {
+        color: var(--primary-color);
+        min-width: 30px;
+      }
+      
+      #contact .section-header h2 {
+        font-weight: 600;
+        font-size: 2.5rem;
+      }
+      
+}

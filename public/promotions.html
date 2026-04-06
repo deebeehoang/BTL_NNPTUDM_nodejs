@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khuyến mãi - VietTravel</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/index.css">
+    
+    <style>
+        .promotion-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .promotion-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .promotion-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .promotion-body {
+            padding: 1.5rem;
+        }
+        
+        .discount-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .promotion-type-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .expiry-info {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div id="navbar-container"></div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <h1><i class="fas fa-tags me-3"></i>Khuyến mãi hấp dẫn</h1>
+            <p>Khám phá những ưu đãi tuyệt vời cho chuyến du lịch của bạn</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Đang tải...</span>
+            </div>
+            <p class="mt-3">Đang tải danh sách khuyến mãi...</p>
+        </div>
+
+        <!-- Promotions Grid -->
+        <div id="promotionsContainer" class="row g-4" style="display: none;">
+            <!-- Promotions will be loaded here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="text-center py-5" style="display: none;">
+            <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">Hiện tại chưa có khuyến mãi nào</h4>
+            <p class="text-muted">Hãy quay lại sau để không bỏ lỡ những ưu đãi hấp dẫn!</p>
+            <a href="index.html" class="btn btn-primary">
+                <i class="fas fa-home me-2"></i>Về trang chủ
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/navbar.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load navbar and footer
+            loadNavbar();
+            loadFooter();
+            
+            // Load promotions
+            loadPromotions();
+        });
+
+        async function loadPromotions() {
+            try {
+                const response = await fetch(`${window.API_URL}/promotions/customer/active`);
+                const data = await response.json();
+                
+                document.getElementById('loadingState').style.display = 'none';
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    renderPromotions(data.data);
+                } else {
+                    document.getElementById('emptyState').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading promotions:', error);
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        function renderPromotions(promotions) {
+            const container = document.getElementById('promotionsContainer');
+            
+            container.innerHTML = promotions.map(promo => {
+                const isExpiring = promo.Ngay_ket_thuc && new Date(promo.Ngay_ket_thuc) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+                const isGlobal = promo.Ma_km === 'GLOBAL_PERCENT';
+                
+                return `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card promotion-card h-100 position-relative">
+                            <div class="promotion-type-badge">
+                                ${isGlobal ? 'Toàn site' : 'Tour cụ thể'}
+                            </div>
+                            
+                            <div class="promotion-header">
+                                <div class="discount-badge">
+                                    -${promo.Gia_tri}%
+                                </div>
+                                <h5 class="mt-3 mb-0">${promo.Ten_km || promo.Ma_km}</h5>
+                            </div>
+                            
+                            <div class="promotion-body">
+                                <p class="text-muted mb-3">${promo.Mo_ta || 'Khuyến mãi hấp dẫn cho chuyến du lịch của bạn'}</p>
+                                
+                                ${isGlobal ? `
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-globe me-2"></i>
+                                        <strong>Áp dụng cho tất cả tour</strong>
+                                    </div>
+                                ` : promo.danh_sach_tour ? `
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-map-marked-alt me-2"></i>
+                                        <strong>Áp dụng cho:</strong><br>
+                                        <small>${promo.danh_sach_tour}</small>
+                                    </div>
+                                ` : ''}
+                                
+                                ${promo.Ngay_ket_thuc ? `
+                                    <div class="expiry-info ${isExpiring ? 'border-warning' : ''}">
+                                        <i class="fas fa-clock me-2"></i>
+                                        <strong>Hết hạn:</strong> ${formatDate(new Date(promo.Ngay_ket_thuc))}
+                                        ${isExpiring ? '<br><small class="text-warning">Sắp hết hạn!</small>' : ''}
+                                    </div>
+                                ` : ''}
+                                
+                                <div class="mt-3">
+                                    <a href="index.html" class="btn btn-primary w-100">
+                                        <i class="fas fa-search me-2"></i>Xem tour
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.style.display = 'flex';
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+    </script>
+</body>
+</html>

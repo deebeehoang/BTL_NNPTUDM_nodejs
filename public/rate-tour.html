@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đánh giá Tour - VietTravel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 0;
+        }
+        
+        /* Modern Navbar - Gradient Purple to Blue */
+        .navbar {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: none;
+            padding: 1rem 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar.scrolled {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #2563eb 100%) !important;
+            box-shadow: 0 6px 30px rgba(139, 92, 246, 0.4);
+            padding: 0.75rem 0;
+            backdrop-filter: blur(25px);
+        }
+
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .logo-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover .logo-circle {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(360deg);
+        }
+
+        .brand-text {
+            color: white;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar-nav {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9) !important;
+            padding: 0.75rem 1.25rem !important;
+            margin: 0 0.25rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 1px;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .navbar-nav .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .welcome-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .welcome-text i {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary.btn-sm {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-outline-primary.btn-sm:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn-primary.btn-sm {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary.btn-sm:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #667eea;
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        
+        .rating-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .rating-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .rating-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .rating-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .rating-content {
+            padding: 40px;
+        }
+        
+        .tour-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .tour-info h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .tour-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+
+        .detail-item i {
+            margin-right: 10px;
+            color: #667eea;
+            width: 20px;
+        }
+        
+        .rating-section {
+            margin-bottom: 40px;
+        }
+
+        .rating-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .star {
+            font-size: 3rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 0 5px;
+        }
+        
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+            transform: scale(1.1);
+        }
+
+        .rating-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .rating-criteria {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .criteria-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .criteria-item h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .criteria-stars {
+            display: flex;
+            gap: 5px;
+        }
+
+        .criteria-star {
+            font-size: 1.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .criteria-star:hover,
+        .criteria-star.active {
+            color: #ffd700;
+        }
+        
+        .comment-section {
+            margin-bottom: 30px;
+        }
+
+        .comment-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .comment-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        .comment-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .comment-placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .photo-upload {
+            margin-bottom: 30px;
+        }
+
+        .photo-upload h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .photo-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .photo-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .photo-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255,0,0,0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            color: #667eea;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .error-message {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .rating-container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .rating-content {
+                padding: 20px;
+            }
+            
+            .rating-header h1 {
+                font-size: 2rem;
+            }
+            
+            .star {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-container"></div>
+    
+    <div class="rating-container">
+        <div class="rating-header">
+            <h1><i class="fas fa-star"></i> Đánh giá Tour</h1>
+            <p>Chia sẻ trải nghiệm của bạn để giúp du khách khác</p>
+        </div>
+
+        <div class="rating-content">
+            <!-- Tour Information -->
+            <div class="tour-info">
+                <h3 id="tourName">Tour Đà Lạt 3N2Đ</h3>
+                <div class="tour-details">
+                    <div class="detail-item">
+                        <i class="fas fa-calendar"></i>
+                        <span id="tourDate">Ngày khởi hành: 01/02/2025</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-users"></i>
+                        <span id="tourGuests">Số khách: 2 người lớn, 1 trẻ em</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-tag"></i>
+                        <span id="tourPrice">Giá: 4,000,000 ₫</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-receipt"></i>
+                        <span id="bookingId">Mã booking: #B001</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Overall Rating -->
+            <div class="rating-section">
+                <h3>Đánh giá tổng thể</h3>
+                <div class="star-rating" id="overallRating">
+                    <i class="fas fa-star star" data-rating="1"></i>
+                    <i class="fas fa-star star" data-rating="2"></i>
+                    <i class="fas fa-star star" data-rating="3"></i>
+                    <i class="fas fa-star star" data-rating="4"></i>
+                    <i class="fas fa-star star" data-rating="5"></i>
+                </div>
+                <div class="rating-labels">
+                    <span>Rất tệ</span>
+                    <span>Rất tốt</span>
+                </div>
+            </div>
+            
+            <!-- Detailed Criteria -->
+            <div class="rating-section">
+                <h3>Đánh giá chi tiết</h3>
+                <div class="rating-criteria">
+                    <div class="criteria-item">
+                        <h4>Chất lượng dịch vụ</h4>
+                        <div class="criteria-stars" data-criteria="service">
+                            <i class="fas fa-star criteria-star" data-rating="1"></i>
+                            <i class="fas fa-star criteria-star" data-rating="2"></i>
+                            <i class="fas fa-star criteria-star" data-rating="3"></i>
+                            <i class="fas fa-star criteria-star" data-rating="4"></i>
+                            <i class="fas fa-star criteria-star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <div class="criteria-item">
+                        <h4>Hướng dẫn viên</h4>
+                        <div class="criteria-stars" data-criteria="guide">
+                            <i class="fas fa-star criteria-star" data-rating="1"></i>
+                            <i class="fas fa-star criteria-star" data-rating="2"></i>
+                            <i class="fas fa-star criteria-star" data-rating="3"></i>
+                            <i class="fas fa-star criteria-star" data-rating="4"></i>
+                            <i class="fas fa-star criteria-star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <div class="criteria-item">
+                        <h4>Phương tiện</h4>
+                        <div class="criteria-stars" data-criteria="transport">
+                            <i class="fas fa-star criteria-star" data-rating="1"></i>
+                            <i class="fas fa-star criteria-star" data-rating="2"></i>
+                            <i class="fas fa-star criteria-star" data-rating="3"></i>
+                            <i class="fas fa-star criteria-star" data-rating="4"></i>
+                            <i class="fas fa-star criteria-star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <div class="criteria-item">
+                        <h4>Giá cả</h4>
+                        <div class="criteria-stars" data-criteria="value">
+                            <i class="fas fa-star criteria-star" data-rating="1"></i>
+                            <i class="fas fa-star criteria-star" data-rating="2"></i>
+                            <i class="fas fa-star criteria-star" data-rating="3"></i>
+                            <i class="fas fa-star criteria-star" data-rating="4"></i>
+                            <i class="fas fa-star criteria-star" data-rating="5"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Comment Section -->
+            <div class="comment-section">
+                <h3>Nhận xét của bạn</h3>
+                <textarea class="comment-textarea" id="commentText" placeholder="Chia sẻ chi tiết về trải nghiệm của bạn..."></textarea>
+            </div>
+
+            <!-- Photo Upload -->
+            <div class="photo-upload">
+                <h3>Hình ảnh từ chuyến đi</h3>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                        Kéo thả hình ảnh vào đây hoặc click để chọn<br>
+                        <small>Tối đa 5 hình, mỗi hình dưới 5MB</small>
+                    </div>
+                </div>
+                <div class="photo-preview" id="photoPreview"></div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <button class="submit-btn" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Gửi đánh giá
+            </button>
+                <div class="loading" id="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Đang gửi đánh giá...</p>
+                </div>
+                <div class="success-message" id="successMessage">
+                    <i class="fas fa-check-circle"></i>
+                    <p>Cảm ơn bạn đã đánh giá! Đánh giá của bạn đã được gửi thành công.</p>
+                </div>
+                <div class="error-message" id="errorMessage">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p id="errorText">Có lỗi xảy ra. Vui lòng thử lại sau.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Rating Modal -->
+    <div class="modal fade" id="editRatingModal" tabindex="-1" aria-labelledby="editRatingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editRatingModalLabel">
+                        <i class="fas fa-edit me-2"></i>Chỉnh sửa đánh giá
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editRatingId">
+                    <input type="hidden" id="editBookingId">
+                    
+                    <!-- Tour Info -->
+                    <div class="mb-3 p-3 bg-light rounded">
+                        <h6 class="mb-1" id="editTourName">Tour Name</h6>
+                        <small class="text-muted" id="editTourDate">Date</small>
+                    </div>
+                    
+                    <!-- Overall Rating -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Đánh giá tổng thể <span class="text-danger">*</span></label>
+                        <div class="star-rating" id="editOverallRating">
+                            <i class="fas fa-star star" data-rating="1"></i>
+                            <i class="fas fa-star star" data-rating="2"></i>
+                            <i class="fas fa-star star" data-rating="3"></i>
+                            <i class="fas fa-star star" data-rating="4"></i>
+                            <i class="fas fa-star star" data-rating="5"></i>
+                        </div>
+                        <input type="hidden" id="editOverallRatingValue" value="0">
+                    </div>
+                    
+                    <!-- Criteria Ratings -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Dịch vụ</label>
+                            <div class="criteria-stars" data-criteria="dich_vu">
+                                <i class="fas fa-star star" data-rating="1"></i>
+                                <i class="fas fa-star star" data-rating="2"></i>
+                                <i class="fas fa-star star" data-rating="3"></i>
+                                <i class="fas fa-star star" data-rating="4"></i>
+                                <i class="fas fa-star star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" id="editDichVuRating" value="0">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Hướng dẫn viên</label>
+                            <div class="criteria-stars" data-criteria="huong_dan_vien">
+                                <i class="fas fa-star star" data-rating="1"></i>
+                                <i class="fas fa-star star" data-rating="2"></i>
+                                <i class="fas fa-star star" data-rating="3"></i>
+                                <i class="fas fa-star star" data-rating="4"></i>
+                                <i class="fas fa-star star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" id="editHuongDanVienRating" value="0">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phương tiện</label>
+                            <div class="criteria-stars" data-criteria="phuong_tien">
+                                <i class="fas fa-star star" data-rating="1"></i>
+                                <i class="fas fa-star star" data-rating="2"></i>
+                                <i class="fas fa-star star" data-rating="3"></i>
+                                <i class="fas fa-star star" data-rating="4"></i>
+                                <i class="fas fa-star star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" id="editPhuongTienRating" value="0">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Giá cả</label>
+                            <div class="criteria-stars" data-criteria="gia_ca">
+                                <i class="fas fa-star star" data-rating="1"></i>
+                                <i class="fas fa-star star" data-rating="2"></i>
+                                <i class="fas fa-star star" data-rating="3"></i>
+                                <i class="fas fa-star star" data-rating="4"></i>
+                                <i class="fas fa-star star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" id="editGiaCaRating" value="0">
+                        </div>
+                    </div>
+                    
+                    <!-- Comment -->
+                    <div class="mb-3">
+                        <label for="editComment" class="form-label">Nhận xét</label>
+                        <textarea class="form-control" id="editComment" rows="4" placeholder="Chia sẻ trải nghiệm của bạn..."></textarea>
+                    </div>
+                    
+                    <!-- Image Upload Section -->
+                    <div class="mb-3" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+                        <label class="form-label fw-bold" style="display: block !important; margin-bottom: 10px !important;">Hình ảnh đánh giá</label>
+                        <div class="edit-upload-area" id="editUploadArea" style="display: flex !important; visibility: visible !important; opacity: 1 !important; border: 2px dashed #ddd !important; padding: 30px !important; background: #f8f9fa !important; border-radius: 10px !important; cursor: pointer !important; min-height: 150px !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: center !important;">
+                            <i class="fas fa-cloud-upload-alt upload-icon" style="font-size: 2.5rem !important; color: #667eea !important; margin-bottom: 10px !important; display: block !important;"></i>
+                            <p class="upload-text" style="color: #666 !important; font-size: 0.95rem !important; margin-bottom: 5px !important; font-weight: 500 !important; display: block !important;">Kéo thả ảnh vào đây hoặc click để chọn</p>
+                            <small class="text-muted d-block mt-2" style="color: #999 !important; font-size: 0.85rem !important; display: block !important;">Tối đa 5 ảnh, mỗi ảnh tối đa 5MB</small>
+                            <input type="file" id="editImageInput" multiple accept="image/*" style="display: none !important;">
+                        </div>
+                        <div class="edit-photo-preview" id="editPhotoPreview" style="display: grid !important; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important; gap: 10px !important; margin-top: 15px !important; min-height: 50px !important;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="saveEditRating">
+                        <i class="fas fa-save me-1"></i>Lưu thay đổi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .star-rating, .criteria-stars {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .star-rating .star, .criteria-stars .star {
+            font-size: 1.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .star-rating .star:hover,
+        .criteria-stars .star:hover {
+            transform: scale(1.2);
+        }
+        
+        .star-rating .star.active,
+        .criteria-stars .star.active {
+            color: #ffc107;
+        }
+        
+        .criteria-stars .star {
+            font-size: 1.2rem;
+        }
+        
+        /* Edit Rating Image Upload Styles */
+        #editRatingModal .edit-upload-area,
+        #editRatingModal #editUploadArea {
+            border: 2px dashed #ddd !important;
+            border-radius: 10px !important;
+            padding: 30px !important;
+            text-align: center !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            background: #f8f9fa !important;
+            margin-bottom: 15px !important;
+            min-height: 150px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 1 !important;
+        }
+        
+        .edit-upload-area {
+            border: 2px dashed #ddd !important;
+            border-radius: 10px !important;
+            padding: 30px !important;
+            text-align: center !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            background: #f8f9fa !important;
+            margin-bottom: 15px !important;
+            min-height: 150px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .edit-upload-area:hover {
+            border-color: #667eea !important;
+            background: #f0f2ff !important;
+        }
+
+        .edit-upload-area.dragover {
+            border-color: #667eea !important;
+            background: #f0f2ff !important;
+        }
+
+        .edit-upload-area .upload-icon {
+            font-size: 2.5rem !important;
+            color: #667eea !important;
+            margin-bottom: 10px !important;
+            display: block !important;
+        }
+
+        .edit-upload-area .upload-text {
+            color: #666 !important;
+            font-size: 0.95rem !important;
+            margin-bottom: 5px !important;
+            font-weight: 500 !important;
+        }
+        
+        .edit-upload-area small {
+            color: #999 !important;
+            font-size: 0.85rem !important;
+        }
+
+        .edit-photo-preview {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important;
+            gap: 10px !important;
+            margin-top: 15px !important;
+            min-height: 50px !important;
+        }
+        
+        .edit-photo-preview:empty {
+            display: none !important;
+        }
+
+        .edit-photo-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            aspect-ratio: 1;
+        }
+
+        .edit-photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .edit-photo-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255,0,0,0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .edit-photo-remove:hover {
+            background: rgba(255,0,0,1);
+            transform: scale(1.1);
+        }
+
+        .edit-photo-item.existing {
+            border: 2px solid #667eea;
+        }
+    </style>
+
+    <script>
+        class TourRating {
+            constructor() {
+                this.overallRating = 0;
+                this.criteriaRatings = {
+                    service: 0,
+                    guide: 0,
+                    transport: 0,
+                    value: 0
+                };
+                this.photos = [];
+                this.init();
+            }
+
+            init() {
+                this.setupStarRatings();
+                this.setupPhotoUpload();
+                this.setupSubmit();
+                this.loadBookingData();
+            }
+
+            loadBookingData() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const bookingId = urlParams.get('bookingId');
+                
+                if (bookingId) {
+                    // Load booking data from API để tạo đánh giá mới
+                    this.fetchBookingData(bookingId);
+                } else {
+                    // Không có bookingId - hiển thị danh sách đánh giá của người dùng
+                    this.loadUserRatings();
+                }
+            }
+            
+            async loadUserRatings() {
+                try {
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        window.location.href = '/auth.html';
+                        return;
+                    }
+                    
+                    // Ẩn form đánh giá và hiển thị danh sách
+                    const ratingContent = document.querySelector('.rating-content');
+                    if (ratingContent) {
+                        ratingContent.innerHTML = `
+                            <div style="text-align: center; padding: 2rem;">
+                                <h2 style="margin-bottom: 2rem;"><i class="fas fa-star me-2"></i>Đánh giá của tôi</h2>
+                                <div id="userRatingsList" style="text-align: left;">
+                                    <div class="text-center py-5">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Đang tải...</span>
+                                        </div>
+                                        <p class="mt-3">Đang tải đánh giá của bạn...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    const response = await fetch('/api/ratings/my-ratings', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.displayUserRatings(data.data.ratings || []);
+                    } else {
+                        throw new Error('Không thể tải đánh giá');
+                    }
+                } catch (error) {
+                    console.error('Error loading user ratings:', error);
+                    const ratingsList = document.getElementById('userRatingsList');
+                    if (ratingsList) {
+                        ratingsList.innerHTML = `
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Có lỗi xảy ra khi tải đánh giá: ${error.message}
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            displayUserRatings(ratings) {
+                const ratingsList = document.getElementById('userRatingsList');
+                if (!ratingsList) return;
+                
+                if (!ratings || ratings.length === 0) {
+                    ratingsList.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-star" style="font-size: 4rem; color: #ddd; margin-bottom: 1rem;"></i>
+                            <h4>Bạn chưa có đánh giá nào</h4>
+                            <p class="text-muted">Hãy đặt tour và đánh giá để chia sẻ trải nghiệm của bạn</p>
+                            <a href="/" class="btn btn-primary mt-3">
+                                <i class="fas fa-compass me-2"></i>Khám phá tour
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                ratings.forEach(rating => {
+                    const ratingDate = new Date(rating.Ngay_danh_gia).toLocaleDateString('vi-VN');
+                    const stars = '★'.repeat(rating.So_sao || 0) + '☆'.repeat(5 - (rating.So_sao || 0));
+                    
+                    html += `
+                        <div class="rating-item-card" style="background: #f8f9fa; border-radius: 15px; padding: 2rem; margin-bottom: 1.5rem; border: 1px solid #e9ecef;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                                <div>
+                                    <h5 style="color: #667eea; margin-bottom: 0.5rem;">${rating.Ten_tour || 'Tour'}</h5>
+                                    <p style="color: #666; margin: 0;">
+                                        <i class="fas fa-calendar me-2"></i>${ratingDate}
+                                    </p>
+                                </div>
+                                <button class="btn btn-sm btn-primary" onclick="editRatingFromList('${rating.Id_review}')">
+                                    <i class="fas fa-edit me-1"></i>Sửa
+                                </button>
+                            </div>
+                            
+                            <div style="margin-bottom: 1rem;">
+                                <div style="color: #f6ad55; font-size: 1.5rem; margin-bottom: 0.5rem;">${stars}</div>
+                                ${rating.Binh_luan ? `
+                                    <p style="color: #333; line-height: 1.6; margin: 0;">${rating.Binh_luan}</p>
+                                ` : ''}
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                                <div style="text-align: center; padding: 0.75rem; background: white; border-radius: 8px;">
+                                    <div style="font-size: 0.8rem; color: #666; margin-bottom: 0.25rem;">Dịch vụ</div>
+                                    <div style="font-weight: 600; color: #667eea;">${rating.Diem_dich_vu || 0}/5</div>
+                                </div>
+                                <div style="text-align: center; padding: 0.75rem; background: white; border-radius: 8px;">
+                                    <div style="font-size: 0.8rem; color: #666; margin-bottom: 0.25rem;">Hướng dẫn viên</div>
+                                    <div style="font-weight: 600; color: #667eea;">${rating.Diem_huong_dan_vien || 0}/5</div>
+                                </div>
+                                <div style="text-align: center; padding: 0.75rem; background: white; border-radius: 8px;">
+                                    <div style="font-size: 0.8rem; color: #666; margin-bottom: 0.25rem;">Phương tiện</div>
+                                    <div style="font-weight: 600; color: #667eea;">${rating.Diem_phuong_tien || 0}/5</div>
+                                </div>
+                                <div style="text-align: center; padding: 0.75rem; background: white; border-radius: 8px;">
+                                    <div style="font-size: 0.8rem; color: #666; margin-bottom: 0.25rem;">Giá cả</div>
+                                    <div style="font-weight: 600; color: #667eea;">${rating.Diem_gia_ca || 0}/5</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                ratingsList.innerHTML = html;
+            }
+
+            async fetchBookingData(bookingId) {
+            try {
+                const token = localStorage.getItem('token');
+                    const response = await fetch(`/api/bookings/${bookingId}`, {
+                    headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.populateBookingInfo(data.data.booking);
+                        
+                        // Check if user has already rated this booking
+                        await this.checkExistingRating(bookingId);
+                }
+            } catch (error) {
+                    console.error('Error fetching booking data:', error);
+                }
+            }
+            
+            async checkExistingRating(bookingId) {
+                try {
+                    const token = localStorage.getItem('token');
+                    const response = await fetch(`/api/ratings/can-rate/${bookingId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (!data.data.canRate) {
+                            // User has already rated this booking
+                            this.showAlreadyRatedMessage(data.data.existingRating);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error checking existing rating:', error);
+                }
+            }
+            
+            showAlreadyRatedMessage(existingRating) {
+                const container = document.querySelector('.rating-container');
+                container.innerHTML = `
+                    <div class="rating-header">
+                        <h1><i class="fas fa-check-circle me-2"></i>Đã đánh giá</h1>
+                        <p>Bạn đã đánh giá tour này rồi</p>
+                    </div>
+                    <div class="rating-content text-center">
+                        <div class="alert alert-info">
+                            <h4>Tour: ${existingRating.Ten_tour || 'Tour'}</h4>
+                            <div class="mt-3">
+                                <div class="star-rating mb-3">
+                                    ${this.generateStarsHTML(existingRating.So_sao)}
+                                </div>
+                                <p class="text-muted">Đánh giá ngày: ${new Date(existingRating.Ngay_danh_gia).toLocaleDateString('vi-VN')}</p>
+                                ${existingRating.Binh_luan ? `<p class="mt-2">"${existingRating.Binh_luan}"</p>` : ''}
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <a href="/index.html#myRatings" class="btn btn-primary me-2">
+                                <i class="fas fa-star me-1"></i>Xem đánh giá của tôi
+                            </a>
+                            <a href="/index.html" class="btn btn-outline-primary">
+                                <i class="fas fa-home me-1"></i>Về trang chủ
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            generateStarsHTML(rating) {
+                const fullStars = Math.floor(rating);
+                const hasHalfStar = rating % 1 >= 0.5;
+                const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                
+                let stars = '';
+                
+                // Sao đầy
+                for (let i = 0; i < fullStars; i++) {
+                    stars += '<i class="fas fa-star"></i>';
+                }
+                
+                // Sao nửa
+                if (hasHalfStar) {
+                    stars += '<i class="fas fa-star-half-alt"></i>';
+                }
+                
+                // Sao rỗng
+                for (let i = 0; i < emptyStars; i++) {
+                    stars += '<i class="far fa-star"></i>';
+                }
+                
+                return stars;
+            }
+
+            populateBookingInfo(booking) {
+                document.getElementById('tourName').textContent = booking.tour?.Ten_tour || 'Tour';
+                document.getElementById('tourDate').textContent = `Ngày khởi hành: ${new Date(booking.lich?.Ngay_bat_dau).toLocaleDateString('vi-VN')}`;
+                document.getElementById('tourGuests').textContent = `Số khách: ${booking.So_nguoi_lon} người lớn, ${booking.So_tre_em} trẻ em`;
+                document.getElementById('tourPrice').textContent = `Giá: ${booking.Tong_tien.toLocaleString('vi-VN')} ₫`;
+                document.getElementById('bookingId').textContent = `Mã booking: #${booking.Ma_booking}`;
+            }
+
+            setupStarRatings() {
+                // Overall rating
+                const overallStars = document.querySelectorAll('#overallRating .star');
+                overallStars.forEach((star, index) => {
+                    star.addEventListener('click', () => {
+                        this.setOverallRating(index + 1);
+                    });
+                });
+
+                // Criteria ratings
+                const criteriaGroups = document.querySelectorAll('.criteria-stars');
+                criteriaGroups.forEach(group => {
+                    const stars = group.querySelectorAll('.criteria-star');
+                    const criteria = group.dataset.criteria;
+            
+            stars.forEach((star, index) => {
+                star.addEventListener('click', () => {
+                            this.setCriteriaRating(criteria, index + 1);
+                });
+            });
+                });
+            }
+
+            setOverallRating(rating) {
+                this.overallRating = rating;
+                const stars = document.querySelectorAll('#overallRating .star');
+                stars.forEach((star, index) => {
+                    star.classList.toggle('active', index < rating);
+                });
+            }
+
+            setCriteriaRating(criteria, rating) {
+                this.criteriaRatings[criteria] = rating;
+                const stars = document.querySelectorAll(`[data-criteria="${criteria}"] .criteria-star`);
+            stars.forEach((star, index) => {
+                    star.classList.toggle('active', index < rating);
+                });
+            }
+
+            setupPhotoUpload() {
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.multiple = true;
+                fileInput.accept = 'image/*';
+                fileInput.style.display = 'none';
+
+                uploadArea.appendChild(fileInput);
+
+                uploadArea.addEventListener('click', () => {
+                    fileInput.click();
+                });
+
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+
+                uploadArea.addEventListener('dragleave', () => {
+                    uploadArea.classList.remove('dragover');
+                });
+
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    this.handleFiles(e.dataTransfer.files);
+                });
+
+                fileInput.addEventListener('change', (e) => {
+                    this.handleFiles(e.target.files);
+                });
+            }
+
+            handleFiles(files) {
+                Array.from(files).forEach(file => {
+                    if (file.type.startsWith('image/') && file.size <= 5 * 1024 * 1024) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.addPhoto(e.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                }
+            });
+        }
+
+            addPhoto(src) {
+                if (this.photos.length >= 5) return;
+
+                this.photos.push(src);
+                this.updatePhotoPreview();
+            }
+
+            removePhoto(index) {
+                this.photos.splice(index, 1);
+                this.updatePhotoPreview();
+            }
+
+            updatePhotoPreview() {
+                const preview = document.getElementById('photoPreview');
+                preview.innerHTML = '';
+
+                this.photos.forEach((photo, index) => {
+                    const photoItem = document.createElement('div');
+                    photoItem.className = 'photo-item';
+                    photoItem.innerHTML = `
+                        <img src="${photo}" alt="Photo ${index + 1}">
+                        <button class="photo-remove" onclick="tourRating.removePhoto(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    preview.appendChild(photoItem);
+                });
+            }
+
+            setupSubmit() {
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.addEventListener('click', () => {
+                    this.submitRating();
+                });
+            }
+
+            async submitRating() {
+                if (this.overallRating === 0) {
+                    this.showError('Vui lòng chọn điểm đánh giá tổng thể');
+                    return;
+                }
+
+                const submitBtn = document.getElementById('submitBtn');
+                const loading = document.getElementById('loading');
+                const successMessage = document.getElementById('successMessage');
+                const errorMessage = document.getElementById('errorMessage');
+
+                submitBtn.disabled = true;
+                loading.style.display = 'block';
+                errorMessage.style.display = 'none';
+
+                try {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const bookingId = urlParams.get('bookingId');
+                
+                const ratingData = {
+                    bookingId: bookingId,
+                        diem_danh_gia: this.overallRating,
+                        noi_dung_danh_gia: document.getElementById('commentText').value,
+                        criteria_ratings: this.criteriaRatings,
+                        photos: this.photos
+                    };
+
+                    const token = localStorage.getItem('token');
+                    const response = await fetch('/api/ratings', {
+                    method: 'POST',
+                    headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(ratingData)
+                });
+
+                const result = await response.json();
+
+                    if (response.ok) {
+                        loading.style.display = 'none';
+                        successMessage.style.display = 'block';
+                        
+                        setTimeout(() => {
+                            window.location.href = '/my-bookings.html';
+                        }, 2000);
+                } else {
+                        throw new Error(result.message || 'Có lỗi xảy ra');
+                }
+            } catch (error) {
+                    loading.style.display = 'none';
+                    this.showError(error.message);
+                } finally {
+                    submitBtn.disabled = false;
+                }
+            }
+
+            showError(message) {
+                const errorMessage = document.getElementById('errorMessage');
+                const errorText = document.getElementById('errorText');
+                errorText.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        // Initialize the rating system
+        const tourRating = new TourRating();
+        
+        // Function để edit rating từ danh sách
+        async function editRatingFromList(ratingId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/ratings/${ratingId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const rating = data.data.rating;
+                    
+                    // Populate modal với dữ liệu đánh giá
+                    populateEditModal(rating);
+                    
+                    // Mở modal
+                    const modalElement = document.getElementById('editRatingModal');
+                    if (modalElement) {
+                        const modal = new bootstrap.Modal(modalElement);
+                        modal.show();
+                    }
+                } else {
+                    alert('Không thể tải thông tin đánh giá');
+                }
+            } catch (error) {
+                console.error('Error loading rating:', error);
+                alert('Có lỗi xảy ra khi tải đánh giá');
+            }
+        }
+        
+        // Populate edit modal với dữ liệu đánh giá
+        function populateEditModal(rating) {
+            // Set hidden fields
+            document.getElementById('editRatingId').value = rating.Id_review || '';
+            document.getElementById('editBookingId').value = rating.Ma_booking || '';
+            
+            // Set tour info
+            document.getElementById('editTourName').textContent = rating.Ten_tour || 'Tour';
+            const ratingDate = rating.Ngay_danh_gia ? new Date(rating.Ngay_danh_gia).toLocaleDateString('vi-VN') : '';
+            document.getElementById('editTourDate').textContent = ratingDate;
+            
+            // Set comment
+            document.getElementById('editComment').value = rating.Binh_luan || '';
+            
+            // Initialize image arrays
+            window.editRatingImages = {
+                existing: [], // Existing images from server
+                new: []      // New uploaded images
+            };
+            
+            // Load existing images
+            if (rating.Hinh_anh) {
+                let imageUrls;
+                if (typeof rating.Hinh_anh === 'string') {
+                    imageUrls = rating.Hinh_anh.split(',').map(img => img.trim()).filter(img => img);
+                } else if (Array.isArray(rating.Hinh_anh)) {
+                    imageUrls = rating.Hinh_anh.map(img => typeof img === 'string' ? img.trim() : String(img)).filter(img => img);
+                } else {
+                    imageUrls = [String(rating.Hinh_anh)].filter(img => img && img !== 'undefined' && img !== 'null');
+                }
+                window.editRatingImages.existing = imageUrls;
+            }
+            
+            // Set star ratings sau khi modal được hiển thị
+            const modalElement = document.getElementById('editRatingModal');
+            modalElement.addEventListener('shown.bs.modal', function onModalShown() {
+                modalElement.removeEventListener('shown.bs.modal', onModalShown);
+                
+                // Set overall rating
+                setEditStarRating('editOverallRating', rating.So_sao || 0);
+                document.getElementById('editOverallRatingValue').value = rating.So_sao || 0;
+                
+                // Set criteria ratings
+                setEditStarRating('dich_vu', rating.Diem_dich_vu || 0);
+                document.getElementById('editDichVuRating').value = rating.Diem_dich_vu || 0;
+                
+                setEditStarRating('huong_dan_vien', rating.Diem_huong_dan_vien || 0);
+                document.getElementById('editHuongDanVienRating').value = rating.Diem_huong_dan_vien || 0;
+                
+                setEditStarRating('phuong_tien', rating.Diem_phuong_tien || 0);
+                document.getElementById('editPhuongTienRating').value = rating.Diem_phuong_tien || 0;
+                
+                setEditStarRating('gia_ca', rating.Diem_gia_ca || 0);
+                document.getElementById('editGiaCaRating').value = rating.Diem_gia_ca || 0;
+                
+                // Initialize star rating event listeners
+                initializeEditStarRatings();
+                
+                // Initialize image upload
+                initializeEditImageUpload();
+                
+                // Display existing images
+                displayEditImages();
+                
+                // Force show upload area
+                const uploadArea = document.getElementById('editUploadArea');
+                const uploadSection = uploadArea ? uploadArea.closest('.mb-3') : null;
+                if (uploadArea) {
+                    uploadArea.style.display = 'flex';
+                    uploadArea.style.visibility = 'visible';
+                    uploadArea.style.opacity = '1';
+                }
+                if (uploadSection) {
+                    uploadSection.style.display = 'block';
+                    uploadSection.style.visibility = 'visible';
+                    uploadSection.style.opacity = '1';
+                }
+            }, { once: true });
+        }
+        
+        // Set star rating cho edit modal
+        function setEditStarRating(containerId, rating) {
+            let container;
+            if (containerId === 'editOverallRating') {
+                container = document.getElementById('editOverallRating');
+            } else {
+                container = document.querySelector(`[data-criteria="${containerId}"]`);
+            }
+            
+            if (!container) return;
+            
+            const stars = container.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+        
+        // Initialize star rating event listeners cho edit modal
+        function initializeEditStarRatings() {
+            // Overall rating
+            const overallStars = document.querySelectorAll('#editOverallRating .star');
+            overallStars.forEach((star, index) => {
+                const newStar = star.cloneNode(true);
+                star.parentNode.replaceChild(newStar, star);
+                
+                newStar.addEventListener('click', function() {
+                    const rating = index + 1;
+                    setEditStarRating('editOverallRating', rating);
+                    document.getElementById('editOverallRatingValue').value = rating;
+                });
+            });
+            
+            // Criteria ratings
+            const criteriaContainers = document.querySelectorAll('.criteria-stars');
+            criteriaContainers.forEach(container => {
+                const stars = container.querySelectorAll('.star');
+                const criteria = container.dataset.criteria;
+                
+                stars.forEach((star, index) => {
+                    const newStar = star.cloneNode(true);
+                    star.parentNode.replaceChild(newStar, star);
+                    
+                    newStar.addEventListener('click', function() {
+                        const rating = index + 1;
+                        setEditStarRating(criteria, rating);
+                        // Map criteria names to element IDs
+                        const elementIdMap = {
+                            'dich_vu': 'editDichVuRating',
+                            'huong_dan_vien': 'editHuongDanVienRating',
+                            'phuong_tien': 'editPhuongTienRating',
+                            'gia_ca': 'editGiaCaRating'
+                        };
+                        const ratingElement = document.getElementById(elementIdMap[criteria]);
+                        if (ratingElement) {
+                            ratingElement.value = rating;
+                        }
+                    });
+                });
+            });
+            
+            // Save button
+            const saveBtn = document.getElementById('saveEditRating');
+            if (saveBtn) {
+                const newBtn = saveBtn.cloneNode(true);
+                saveBtn.parentNode.replaceChild(newBtn, saveBtn);
+                
+                newBtn.addEventListener('click', async function() {
+                    await saveEditRating();
+                });
+            }
+        }
+        
+        // Initialize image upload for edit modal
+        function initializeEditImageUpload() {
+            const uploadArea = document.getElementById('editUploadArea');
+            const fileInput = document.getElementById('editImageInput');
+            
+            if (!uploadArea || !fileInput) return;
+            
+            // Remove existing listeners to avoid duplicates
+            const newUploadArea = uploadArea.cloneNode(true);
+            uploadArea.parentNode.replaceChild(newUploadArea, uploadArea);
+            const newFileInput = document.getElementById('editImageInput');
+            
+            // Click to upload
+            newUploadArea.addEventListener('click', () => {
+                newFileInput.click();
+            });
+            
+            // Drag and drop
+            newUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                newUploadArea.classList.add('dragover');
+            });
+            
+            newUploadArea.addEventListener('dragleave', () => {
+                newUploadArea.classList.remove('dragover');
+            });
+            
+            newUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                newUploadArea.classList.remove('dragover');
+                handleEditImageFiles(e.dataTransfer.files);
+            });
+            
+            // File input change
+            newFileInput.addEventListener('change', (e) => {
+                handleEditImageFiles(e.target.files);
+                e.target.value = '';
+            });
+        }
+        
+        // Handle image files for edit
+        function handleEditImageFiles(files) {
+            const maxImages = 5;
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            
+            if (!window.editRatingImages) {
+                window.editRatingImages = { existing: [], new: [] };
+            }
+            
+            Array.from(files).forEach(file => {
+                if (window.editRatingImages.existing.length + window.editRatingImages.new.length >= maxImages) {
+                    alert('Tối đa 5 ảnh được phép');
+                    return;
+                }
+                
+                if (!file.type.startsWith('image/')) {
+                    alert('Chỉ chấp nhận file ảnh');
+                    return;
+                }
+                
+                if (file.size > maxSize) {
+                    alert(`Ảnh ${file.name} vượt quá 5MB`);
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    window.editRatingImages.new.push({
+                        file: file,
+                        preview: e.target.result
+                    });
+                    displayEditImages();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // Display images in edit modal
+        function displayEditImages() {
+            const preview = document.getElementById('editPhotoPreview');
+            if (!preview || !window.editRatingImages) return;
+            
+            preview.innerHTML = '';
+            
+            // Display existing images
+            window.editRatingImages.existing.forEach((imageUrl, index) => {
+                // Ensure imageUrl is a string
+                const urlString = Array.isArray(imageUrl) ? imageUrl[0] : (typeof imageUrl === 'string' ? imageUrl : '');
+                if (!urlString) return;
+                
+                const photoItem = document.createElement('div');
+                photoItem.className = 'edit-photo-item existing';
+                photoItem.innerHTML = `
+                    <img src="${getEditImageUrl(urlString)}" alt="Ảnh ${index + 1}" onerror="this.src='images/placeholder.jpg'">
+                    <button type="button" class="edit-photo-remove" onclick="removeEditExistingImage(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                preview.appendChild(photoItem);
+            });
+            
+            // Display new images
+            window.editRatingImages.new.forEach((imageData, index) => {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'edit-photo-item';
+                photoItem.innerHTML = `
+                    <img src="${imageData.preview}" alt="Ảnh mới ${index + 1}">
+                    <button type="button" class="edit-photo-remove" onclick="removeEditNewImage(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                preview.appendChild(photoItem);
+            });
+        }
+        
+        // Remove existing image
+        function removeEditExistingImage(index) {
+            if (window.editRatingImages && window.editRatingImages.existing) {
+                window.editRatingImages.existing.splice(index, 1);
+                displayEditImages();
+            }
+        }
+        
+        // Remove new image
+        function removeEditNewImage(index) {
+            if (window.editRatingImages && window.editRatingImages.new) {
+                window.editRatingImages.new.splice(index, 1);
+                displayEditImages();
+            }
+        }
+        
+        // Get image URL helper
+        function getEditImageUrl(imagePath) {
+            if (!imagePath) return 'images/placeholder.jpg';
+            if (imagePath.startsWith('http')) return imagePath;
+            if (imagePath.startsWith('/uploads/')) return 'images' + imagePath;
+            if (imagePath.startsWith('uploads/')) return 'images/' + imagePath;
+            if (imagePath.startsWith('/images/')) return imagePath.substring(1);
+            if (!imagePath.startsWith('images/')) return 'images/uploads/' + imagePath;
+            return imagePath;
+        }
+        
+        // Export functions for global access
+        window.removeEditExistingImage = removeEditExistingImage;
+        window.removeEditNewImage = removeEditNewImage;
+        
+        // Save edited rating
+        async function saveEditRating() {
+            const ratingId = document.getElementById('editRatingId').value;
+            const overallRating = parseInt(document.getElementById('editOverallRatingValue').value) || 0;
+            const comment = document.getElementById('editComment').value;
+            const dichVu = parseInt(document.getElementById('editDichVuRating').value) || 0;
+            const huongDanVien = parseInt(document.getElementById('editHuongDanVienRating').value) || 0;
+            const phuongTien = parseInt(document.getElementById('editPhuongTienRating').value) || 0;
+            const giaCa = parseInt(document.getElementById('editGiaCaRating').value) || 0;
+            
+            if (overallRating === 0) {
+                alert('Vui lòng chọn điểm đánh giá tổng thể');
+                return;
+            }
+            
+            const saveBtn = document.getElementById('saveEditRating');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Đang lưu...';
+            
+            try {
+                const token = localStorage.getItem('token');
+                
+                // Prepare FormData for file upload
+                const formData = new FormData();
+                formData.append('diem_danh_gia', overallRating);
+                formData.append('noi_dung_danh_gia', comment);
+                formData.append('diem_dich_vu', dichVu);
+                formData.append('diem_huong_dan_vien', huongDanVien);
+                formData.append('diem_phuong_tien', phuongTien);
+                formData.append('diem_gia_ca', giaCa);
+                
+                // Add existing images (keep these)
+                const existingImages = window.editRatingImages ? window.editRatingImages.existing || [] : [];
+                existingImages.forEach((imgUrl) => {
+                    formData.append('existing_images', imgUrl);
+                });
+                
+                // Add new images
+                const newImages = window.editRatingImages ? window.editRatingImages.new || [] : [];
+                newImages.forEach((imageData) => {
+                    formData.append('images', imageData.file);
+                });
+                
+                console.log('💾 Saving rating edit with images:', {
+                    existing: existingImages.length,
+                    new: newImages.length
+                });
+                
+                const response = await fetch(`/api/ratings/${ratingId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Reset image arrays
+                    if (window.editRatingImages) {
+                        window.editRatingImages = { existing: [], new: [] };
+                    }
+                    
+                    // Đóng modal
+                    const modalElement = document.getElementById('editRatingModal');
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    if (modal) {
+                        modal.hide();
+                    }
+                    
+                    // Reload danh sách đánh giá
+                    if (tourRating && typeof tourRating.loadUserRatings === 'function') {
+                        await tourRating.loadUserRatings();
+                    }
+                    
+                    // Hiển thị thông báo thành công
+                    alert('Đã cập nhật đánh giá thành công!');
+                } else {
+                    throw new Error(result.message || 'Có lỗi xảy ra khi cập nhật đánh giá');
+                }
+            } catch (error) {
+                console.error('Error saving rating:', error);
+                alert('Có lỗi xảy ra: ' + error.message);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save me-1"></i>Lưu thay đổi';
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/navbar.js"></script>
+</body>
+</html>

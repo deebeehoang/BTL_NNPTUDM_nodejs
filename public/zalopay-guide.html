@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng dẫn sử dụng ZaloPay Sandbox - VietTravel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .guide-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .step {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background-color: #0d6efd;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+        }
+        
+        .code-block {
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .note {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <div class="container py-5 guide-container">
+        <div class="mb-5">
+            <h1 class="mb-3">Hướng dẫn sử dụng ZaloPay Sandbox</h1>
+            <p class="lead">Tài liệu này hướng dẫn cách thiết lập và sử dụng ZaloPay Sandbox để test chức năng thanh toán trong môi trường phát triển.</p>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">1</span> Đăng ký tài khoản ZaloPay Sandbox</h3>
+            <p>Truy cập <a href="https://sandbox.zalopay.com.vn/register" target="_blank">https://sandbox.zalopay.com.vn/register</a> để đăng ký tài khoản ZaloPay Sandbox.</p>
+            <p>Sau khi đăng ký, bạn sẽ nhận được:</p>
+            <ul>
+                <li><strong>AppID</strong>: Mã ứng dụng của bạn</li>
+                <li><strong>Key1</strong>: Khóa bí mật để tạo chữ ký MAC</li>
+                <li><strong>Key2</strong>: Khóa bí mật để xác thực callback</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">2</span> Cài đặt ứng dụng ZaloPay Sandbox</h3>
+            <p>Tải ứng dụng ZaloPay Sandbox để test thanh toán:</p>
+            <ul>
+                <li>Android: <a href="https://sandbox.zalopay.com.vn/docs/default/index/index/android-testing" target="_blank">Tải tại đây</a></li>
+                <li>iOS: <a href="https://sandbox.zalopay.com.vn/docs/default/index/index/ios-testing" target="_blank">Tải tại đây</a></li>
+            </ul>
+            <div class="note mt-3">
+                <p><i class="fas fa-info-circle me-2"></i> <strong>Lưu ý:</strong> Ứng dụng ZaloPay Sandbox chỉ dùng để test, không phải ứng dụng ZaloPay thật.</p>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">3</span> Thiết lập tài khoản trong ứng dụng</h3>
+            <ol>
+                <li>Mở ứng dụng ZaloPay Sandbox đã tải về.</li>
+                <li>Đăng nhập với số điện thoại mẫu: <strong>0123456789</strong></li>
+                <li>Mã OTP mặc định: <strong>1234</strong></li>
+                <li>Mật khẩu thanh toán: <strong>1234</strong></li>
+            </ol>
+            <p>Tài khoản ZaloPay Sandbox được nạp sẵn tiền ảo để test thanh toán.</p>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">4</span> Cập nhật thông tin kết nối</h3>
+            <p>Cập nhật thông tin kết nối trong file cấu hình của dự án:</p>
+            <div class="code-block">
+<pre>// src/config/zalopay.js
+module.exports = {
+  app_id: YOUR_APP_ID, // lấy từ ZaloPay
+  key1: 'YOUR_KEY1', // do ZaloPay cung cấp
+  key2: 'YOUR_KEY2', // key kiểm tra callback
+  endpoint: 'https://sb-openapi.zalopay.vn/v2/create',
+  callback_url: 'https://your-domain.com/api/payment/zalo-callback',
+};
+</pre>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">5</span> Test thanh toán</h3>
+            <ol>
+                <li>Chọn tour và tiến hành đặt chỗ như bình thường.</li>
+                <li>Tại trang thanh toán, chọn phương thức thanh toán ZaloPay.</li>
+                <li>Click vào nút "Mở ứng dụng ZaloPay" để chuyển đến trang thanh toán.</li>
+                <li>Sử dụng ứng dụng ZaloPay Sandbox để quét mã QR hoặc mở link thanh toán.</li>
+                <li>Xác nhận thanh toán trong ứng dụng ZaloPay Sandbox bằng mật khẩu 1234.</li>
+                <li>Sau khi thanh toán thành công, bạn sẽ được chuyển hướng về trang xác nhận.</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">6</span> Kiểm tra giao dịch</h3>
+            <p>Bạn có thể kiểm tra trạng thái giao dịch trong Dashboard ZaloPay Sandbox:</p>
+            <p><a href="https://sbmc.zalopay.vn/apps" target="_blank">https://sbmc.zalopay.vn/apps</a></p>
+            <p>Đăng nhập với tài khoản ZaloPay Sandbox của bạn và kiểm tra lịch sử giao dịch.</p>
+        </div>
+        
+        <div class="mt-5">
+            <h3>Tài liệu tham khảo</h3>
+            <ul>
+                <li><a href="https://docs.zalopay.vn/docs/developer-guide/integration/overview/" target="_blank">Tài liệu chính thức của ZaloPay</a></li>
+                <li><a href="https://docs.zalopay.vn/docs/developer-guide/testing/steps/" target="_blank">Hướng dẫn test ZaloPay</a></li>
+                <li><a href="https://docs.zalopay.vn/docs/developer-guide/testing/testing-stage-guide/" target="_blank">Môi trường test ZaloPay</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/navbar.js"></script>
+</body>
+</html> 
