@@ -1,0 +1,1060 @@
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* CSS Variables - Màu sắc chủ đạo từ trang chủ */
+:root {
+  --primary-color: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  --secondary-color: #64748b;
+  --accent-color: #f59e0b;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --info-color: #06b6d4;
+  --light-color: #f8fafc;
+  --dark-color: #1e293b;
+  --white-color: #ffffff;
+  --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --gradient-navbar: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+/* Base Styles */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--dark-color);
+  background-color: var(--white-color);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
+/* ========== Modern Navbar - Giống trang chủ ========== */
+.navbar {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%) !important;
+  backdrop-filter: blur(20px);
+  border-bottom: none;
+  padding: 1rem 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar.scrolled {
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #2563eb 100%) !important;
+  box-shadow: 0 6px 30px rgba(139, 92, 246, 0.4);
+  padding: 0.75rem 0;
+  backdrop-filter: blur(25px);
+}
+
+/* Logo D-Travel với chữ D trong vòng tròn */
+.navbar-brand {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1.8rem;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+  color: white;
+  transform: scale(1.05);
+}
+
+.logo-circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover .logo-circle {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(360deg);
+}
+
+.brand-text {
+  color: white;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Menu chính */
+.navbar-nav {
+  font-family: 'Inter', sans-serif;
+}
+
+.navbar-nav .nav-link {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9) !important;
+  padding: 0.75rem 1.25rem !important;
+  margin: 0 0.25rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+}
+
+.navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+  border-radius: 1px;
+}
+
+.navbar-nav .nav-link:hover {
+  color: white !important;
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.navbar-nav .nav-link:hover::after {
+  width: 80%;
+}
+
+/* Góc phải - Auth buttons */
+.welcome-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.welcome-text i {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.navbar .btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
+}
+
+.navbar .btn-outline-primary.btn-sm {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar .btn-outline-primary.btn-sm:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.navbar .btn-primary.btn-sm {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+}
+
+.navbar .btn-primary.btn-sm:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+}
+
+.navbar .btn-outline-danger.btn-sm {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+}
+
+.navbar .btn-outline-danger.btn-sm:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Navbar toggler cho mobile */
+.navbar-toggler {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* User avatar */
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.user-avatar:hover {
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
+}
+
+/* Dropdown menu */
+.navbar .dropdown-menu {
+  border: none;
+  box-shadow: var(--shadow-xl);
+  border-radius: var(--radius-lg);
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+}
+
+.navbar .dropdown-item {
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+  color: var(--dark-color);
+  font-weight: 500;
+}
+
+.navbar .dropdown-item:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  color: var(--primary-color);
+  transform: translateX(5px);
+}
+
+.navbar .dropdown-item i {
+  color: var(--primary-color);
+  width: 20px;
+}
+
+/* Tour Header Banner - Hero Image */
+.tour-header-banner {
+  position: relative;
+  height: 500px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-bottom: 40px;
+  background-image: url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=1200&auto=format&fit=crop');
+  background-attachment: fixed;
+  transition: background-image 0.5s ease-in-out;
+}
+
+.tour-banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.5));
+}
+
+/* Tour Title Section */
+.tour-title-section {
+  margin-bottom: 2.5rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.05));
+  border-radius: var(--radius-xl);
+  border-left: 5px solid var(--primary-color);
+  box-shadow: var(--shadow-md);
+}
+
+.tour-main-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.tour-price-large {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--success-color);
+  margin-top: 0.5rem;
+}
+
+.tour-price-large span {
+  font-size: 2.5rem;
+}
+
+/* Rating Display */
+.rating-display {
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+}
+
+.rating-score {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--success-color);
+  line-height: 1;
+}
+
+.rating-total {
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+}
+
+.rating-stars {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+.rating-count {
+  font-size: 0.9rem;
+  color: var(--secondary-color);
+}
+
+/* Itinerary Items */
+.itinerary-item {
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-lg);
+  border-left: 3px solid var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.itinerary-item:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateX(5px);
+  box-shadow: var(--shadow-sm);
+}
+
+.itinerary-item:last-child {
+  margin-bottom: 0;
+}
+
+.itinerary-icon {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  width: 30px;
+  text-align: center;
+}
+
+.itinerary-text {
+  font-size: 1rem;
+  color: var(--dark-color);
+}
+
+/* Detail Boxes */
+.detail-box {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
+  border: 2px solid var(--light-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  height: 100%;
+  box-shadow: var(--shadow-sm);
+}
+
+.detail-box:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+  background: var(--white-color);
+}
+
+.detail-box-icon {
+  width: 50px;
+  height: 50px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.detail-box-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  margin-bottom: 0.5rem;
+}
+
+.detail-box-text {
+  font-size: 0.9rem;
+  color: var(--secondary-color);
+  margin: 0;
+}
+
+.detail-box-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: var(--success-color);
+  font-size: 1.2rem;
+}
+
+/* Main Content Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Improved spacing for better UX */
+#booking-content {
+  margin-top: 2rem;
+}
+
+#booking-content .col-md-7,
+#booking-content .col-md-5 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Card Styling */
+.card {
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 30px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background: var(--gradient-navbar);
+  padding: 20px;
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+}
+
+.booking-form-header {
+  background: linear-gradient(135deg, #818cf8, #6366f1) !important;
+}
+
+.card-header h4 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.card-body {
+  padding: 25px;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+/* Card Body với màu nền khác nhau */
+.card-body-rating {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.08)) !important;
+  border-left: 4px solid var(--primary-color);
+}
+
+.card-body-info {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(6, 182, 212, 0.08)) !important;
+  border-left: 4px solid var(--success-color);
+}
+
+.card-body-schedule {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(251, 191, 36, 0.08)) !important;
+  border-left: 4px solid var(--accent-color);
+}
+
+.card-body-destinations {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.08)) !important;
+  border-left: 4px solid var(--primary-light);
+}
+
+.card-body-reviews {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.05), rgba(245, 158, 11, 0.08)) !important;
+  border-left: 4px solid var(--accent-color);
+}
+
+.card-body-related {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(99, 102, 241, 0.08)) !important;
+  border-left: 4px solid var(--primary-dark);
+}
+
+.card-body-booking {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.03), rgba(139, 92, 246, 0.05)) !important;
+}
+
+.card-body-payment {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(6, 182, 212, 0.08)) !important;
+  border-left: 4px solid var(--info-color);
+}
+
+/* Card Section Title */
+.card-section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+  margin-bottom: 1.5rem !important;
+}
+
+.card-section-title i {
+  color: var(--primary-color);
+}
+
+/* Tour Details Section */
+#tour-details {
+  position: relative;
+}
+
+#tour-details h3 {
+  color: #2d3748;
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #48bb78;
+  padding-bottom: 15px;
+}
+
+#tour-details p {
+  color: #4a5568;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+/* Price Display */
+.text-danger {
+  color: var(--danger-color) !important;
+}
+
+#adult-price, #child-price {
+  font-size: 1.5rem;
+}
+
+/* Payment Methods */
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.payment-method-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--light-color);
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
+}
+
+.payment-method-item:hover {
+  background: var(--white-color);
+  box-shadow: var(--shadow-md);
+  transform: translateX(5px);
+}
+
+.payment-icon {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  width: 40px;
+  text-align: center;
+}
+
+.payment-method-item span {
+  font-weight: 500;
+  color: var(--dark-color);
+}
+
+/* Related Tours */
+.related-tour-card {
+  border: 1px solid var(--light-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.related-tour-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-5px);
+}
+
+.related-tour-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.related-tour-content {
+  padding: 1rem;
+}
+
+.related-tour-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.related-tour-rating {
+  font-size: 0.8rem;
+}
+
+.related-tour-price {
+  margin-top: 0.5rem;
+}
+
+.related-tour-price a {
+  color: var(--success-color);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.related-tour-price a:hover {
+  color: var(--primary-color);
+}
+
+/* Schedule Details */
+#schedule-details {
+  position: relative;
+}
+
+#schedule-details h5 {
+  color: #2d3748;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+#schedule-details p {
+  color: #4a5568;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+#schedule-details .badge {
+  font-size: 1rem;
+  padding: 8px 15px;
+  border-radius: 50px;
+}
+
+/* Description Box */
+.bg-light {
+  background-color: rgba(99, 102, 241, 0.05) !important;
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--primary-color);
+}
+
+/* Destinations Section */
+#destinations-list .card {
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+#destinations-list .card:hover {
+  transform: translateY(-10px);
+}
+
+.card-img-top {
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+#destinations-list .card:hover .card-img-top {
+  transform: scale(1.1);
+}
+
+/* Booking Form */
+#booking-form {
+  position: relative;
+}
+
+.booking-form-card {
+  position: sticky;
+  top: 100px;
+  z-index: 10;
+}
+
+@media (max-width: 991.98px) {
+  .booking-form-card {
+    position: relative;
+    top: 0;
+  }
+}
+
+#booking-form .form-label {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 10px;
+}
+
+#booking-form .form-control,
+#booking-form .form-select {
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--light-color);
+  padding: 12px 16px;
+  transition: all 0.3s ease;
+  background-color: var(--white-color);
+  font-size: 0.95rem;
+}
+
+#booking-form .form-control:hover,
+#booking-form .form-select:hover {
+  border-color: var(--primary-light);
+}
+
+#booking-form .form-control:focus,
+#booking-form .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  background-color: #fff;
+}
+
+/* Order Summary */
+#booking-summary {
+  padding: 15px;
+}
+
+.card.bg-light {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.05)) !important;
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  border-radius: var(--radius-lg);
+}
+
+#total-price {
+  font-size: 1.75rem;
+  color: #e53e3e;
+  font-weight: 700;
+}
+
+/* Submit Button */
+#submit-booking-btn {
+  background: var(--gradient-primary);
+  border: none;
+  padding: 15px;
+  font-size: 1.2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+  margin-top: 15px;
+  color: white;
+  font-weight: 600;
+}
+
+#submit-booking-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-xl);
+  background: var(--gradient-navbar);
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: var(--gradient-navbar);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Extra Services */
+#extraServices .form-check {
+  padding: 15px;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.8), rgba(255, 255, 255, 0.9));
+  border-radius: var(--radius-lg);
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--light-color);
+}
+
+#extraServices .form-check:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.08));
+  transform: translateX(5px);
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-sm);
+}
+
+#extraServices .form-check-input:checked ~ .form-check-label {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+#extraServices .form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Schedules Table */
+.table {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.table thead {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  color: var(--primary-dark);
+}
+
+.table thead th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  padding: 15px;
+  border: none;
+}
+
+.table tbody td {
+  padding: 15px;
+  vertical-align: middle;
+  border-color: #f0fff4;
+}
+
+.table-primary {
+  background-color: rgba(99, 102, 241, 0.1) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .tour-header-banner {
+    height: 400px;
+  }
+  
+  .tour-main-title {
+    font-size: 2rem;
+  }
+  
+  .tour-price-large {
+    font-size: 1.5rem;
+  }
+  
+  .tour-price-large span {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.75rem 0;
+  }
+  
+  .navbar-brand {
+    font-size: 1.5rem;
+  }
+  
+  .logo-circle {
+    width: 38px;
+    height: 38px;
+    font-size: 1.3rem;
+    margin-right: 0.5rem;
+  }
+  
+  .navbar-nav .nav-link {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem;
+  }
+  
+  .tour-header-banner {
+    height: 300px;
+    background-attachment: scroll;
+  }
+  
+  .tour-title-section {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .tour-main-title {
+    font-size: 1.75rem;
+  }
+  
+  .tour-price-large {
+    font-size: 1.25rem;
+  }
+  
+  .tour-price-large span {
+    font-size: 1.5rem;
+  }
+  
+  .rating-score {
+    font-size: 2rem;
+  }
+  
+  .card-header {
+    padding: 15px;
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  .card-section-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem !important;
+  }
+  
+  .detail-box {
+    padding: 1rem;
+  }
+  
+  .detail-box-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  
+  #submit-booking-btn {
+    font-size: 1.1rem;
+    padding: 12px;
+  }
+  
+  .payment-methods {
+    gap: 0.75rem;
+  }
+  
+  .payment-method-item {
+    padding: 0.75rem;
+  }
+  
+  #booking-content .col-md-7,
+  #booking-content .col-md-5 {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar {
+    padding: 0.5rem 0;
+  }
+  
+  .navbar-brand {
+    font-size: 1.3rem;
+  }
+  
+  .logo-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+    margin-right: 0.4rem;
+  }
+  
+  .navbar-nav .nav-link {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.85rem;
+    margin: 0 0.1rem;
+  }
+  
+  .navbar .btn-sm {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .tour-header-banner {
+    height: 250px;
+  }
+  
+  .tour-title-section {
+    padding: 1.25rem;
+  }
+  
+  .tour-main-title {
+    font-size: 1.5rem;
+  }
+  
+  .tour-price-large {
+    font-size: 1.1rem;
+  }
+  
+  .tour-price-large span {
+    font-size: 1.3rem;
+  }
+  
+  .rating-score {
+    font-size: 1.75rem;
+  }
+  
+  .rating-display {
+    padding: 1rem;
+  }
+  
+  .detail-box {
+    padding: 0.75rem;
+  }
+  
+  .card-body {
+    padding: 1.25rem;
+  }
+  
+  .card-section-title {
+    font-size: 1rem;
+  }
+  
+  #adult-price, #child-price {
+    font-size: 1.3rem;
+  }
+  
+  .related-tour-image {
+    height: 120px;
+  }
+  
+  .itinerary-item {
+    padding: 0.75rem;
+  }
+}

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tất cả tour - D-Travel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/alltours.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Modern Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+      <div class="container">
+        <!-- Logo D-Travel với chữ D trong vòng tròn -->
+        <a class="navbar-brand" href="/">
+          <div class="logo-circle">D</div>
+          <span class="brand-text">D-Travel</span>
+        </a>
+        
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <!-- Menu chính ở giữa -->
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Trang chủ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="alltour.html">Tours</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#destinations">Điểm đến</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#about">Giới thiệu</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#contact">Liên hệ</a>
+            </li>
+          </ul>
+          
+          <!-- Góc phải - Auth buttons hoặc User menu -->
+          <div class="d-flex align-items-center gap-3" id="authButtons">
+            <a href="/auth.html" class="btn btn-outline-primary btn-sm">
+              <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+            </a>
+            <a href="/auth.html" class="btn btn-primary btn-sm">
+              <i class="fas fa-user-plus me-1"></i> Đăng ký
+            </a>
+          </div>
+          
+          <div class="d-flex align-items-center gap-3 d-none" id="userMenu">
+            <span class="welcome-text d-flex align-items-center">
+              <i class="fas fa-user-check me-1" id="userIcon"></i>
+              <img id="userAvatar" src="" alt="" class="user-avatar me-2 d-none" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #667eea;">
+              Chào mừng, <strong id="userName" class="ms-1">Người dùng</strong>!
+            </span>
+            <div class="dropdown">
+              <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fas fa-user-circle me-1"></i> Tài khoản
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="/profile.html"><i class="fas fa-id-card me-2"></i> Thông tin cá nhân</a></li>
+                <li><a class="dropdown-item" href="/my-bookings.html"><i class="fas fa-history me-2"></i> Lịch sử đặt tour</a></li>
+                <li><a class="dropdown-item" href="/rate-tour.html"><i class="fas fa-star me-2"></i> Đánh giá của tôi</a></li>
+              </ul>
+            </div>
+            <button class="btn btn-outline-danger btn-sm" id="logoutBtn">
+              <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-banner hero-parallax position-relative">
+        <div class="parallax-container">
+            <div class="contents">
+                <!-- Layer 0: Background xa nhất -->
+                <img src="images/uploads/tourshome/layer-0.jfif" class="img-layer layer-0" onerror="this.style.display='none'">
+                <!-- Cloud: Mây trôi -->
+                <img src="images/uploads/tourshome/clouds.png" class="cloud" alt="clouds" onerror="this.style.display='none'">
+                <!-- Bird small: Chim nhỏ bay ngang -->
+                <img src="images/uploads/tourshome/bird-small.gif" class="bird1" alt="bird" onerror="this.style.display='none'">
+                <!-- Layer 1: Middle ground -->
+                <img src="images/uploads/tourshome/layer1.png" class="img-layer layer-1" onerror="this.style.display='none'">
+                <!-- Layer 2: Foreground -->
+                <img src="images/uploads/tourshome/layer2.png" class="img-layer layer-2" onerror="this.style.display='none'">
+                <!-- Layer 3: Foreground - animation zoom -->
+                <img src="images/uploads/tourshome/layer3.png" class="img-layer layer-3" onerror="this.style.display='none'">
+                <!-- Bird large: Chim lớn bay vào -->
+                <img src="images/uploads/tourshome/bird-large.gif" class="bird" alt="bird" onerror="this.style.display='none'">
+            </div>
+            <div class="hero-content container">
+                <h1 class="display-4 fw-bold mb-4 text-center text-shadow-2">Khám phá tất cả tour cùng D-Travel</h1>
+                
+                <!-- Search and Filter Section trong Hero -->
+                <div class="hero-search-section">
+                    <div class="row g-3 align-items-end">
+                        <!-- Search Input -->
+                        <div class="col-lg-5 col-md-12">
+                            <input type="text" id="heroSearchInput" class="form-control hero-search-input" placeholder="Tìm kiếm tên tour...">
+                        </div>
+                        
+                        <!-- Filter Button - Loại tour -->
+                        <div class="col-lg-3 col-md-6">
+                            <button class="btn hero-filter-btn w-100" id="heroTourTypeBtn">
+                                <i class="fas fa-filter me-2"></i>Loại tour
+                            </button>
+                        </div>
+                        
+                        <!-- Search Button -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="hero-search-button-wrapper">
+                                <input type="text" class="form-control hero-search-bar-input" placeholder="Search" readonly>
+                                <button class="btn hero-search-btn" id="heroSearchBtn">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden Tour Type Dropdown -->
+                    <div class="hero-tour-type-dropdown" id="heroTourTypeDropdown" style="display: none;">
+                        <select id="heroTourTypeFilter" class="form-select">
+                            <option value="">Tất cả</option>
+                            <option value="trong_nuoc">Trong nước</option>
+                            <option value="nuoc_ngoai">Nước ngoài</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <i class="fas fa-chevron-down fa-bounce fa-2x text-white-50"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container mt-5 mb-5">
+        <!-- Filter and Sort Bar -->
+        <div class="filter-sort-bar mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn-filter-sort" id="filterBtn">
+                        <i class="fas fa-filter me-2"></i>Bộ lọc
+                    </button>
+                    <div class="sort-dropdown-wrapper">
+                        <button class="btn-filter-sort" id="sortBtn">
+                            <i class="fas fa-sort me-2"></i><span id="sortBtnText">Sắp xếp theo...</span>
+                            <i class="fas fa-chevron-down ms-2" style="font-size: 0.8rem;"></i>
+                        </button>
+                        <div class="sort-dropdown-menu" id="sortDropdown" style="display: none;">
+                            <a href="#" class="sort-option" data-sort="default">
+                                <i class="fas fa-sort me-2"></i>Mặc định
+                            </a>
+                            <a href="#" class="sort-option" data-sort="price-asc">
+                                <i class="fas fa-sort-amount-up me-2"></i>Giá tăng dần
+                            </a>
+                            <a href="#" class="sort-option" data-sort="price-desc">
+                                <i class="fas fa-sort-amount-down me-2"></i>Giá giảm dần
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hidden Search Inputs (for compatibility with existing JS) -->
+        <input type="text" id="searchInput" class="d-none" placeholder="Tìm kiếm tên tour...">
+        <select id="tourTypeFilter" class="d-none">
+            <option value="">Tất cả</option>
+            <option value="trong_nuoc">Trong nước</option>
+            <option value="nuoc_ngoai">Nước ngoài</option>
+        </select>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="text-center d-none mb-4">
+            <div class="spinner-border text-accent" role="status">
+                <span class="visually-hidden">Đang tải...</span>
+            </div>
+        </div>
+
+        <!-- Tours Container -->
+        <div class="row g-4" id="toursContainer">
+            <!-- Example Tour Card (dynamically loaded by JS) -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card card-box">
+                    <div class="skeleton-loader" style="height: 200px;"></div>
+                    <div class="card-body">
+                        <h5 class="card-title skeleton-loader" style="height: 24px; width: 70%;"></h5>
+                        <p class="card-text skeleton-loader" style="height: 16px; width: 90%;"></p>
+                        <p class="card-text skeleton-loader" style="height: 16px; width: 60%;"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- More tour cards will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="text-warning">D-Travel</h5>
+                    <p>Khám phá thế giới với những hành trình tuyệt vời cùng D-Travel. Chúng tôi mang đến những trải nghiệm du lịch đáng nhớ với dịch vụ chất lượng cao.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Liên kết nhanh</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white text-decoration-none footer-link">Trang chủ</a></li>
+                        <li><a href="index.html#about" class="text-white text-decoration-none footer-link">Giới thiệu</a></li>
+                        <li><a href="index.html#contact" class="text-white text-decoration-none footer-link">Liên hệ</a></li>
+                        <li><a href="alltour.html" class="text-white text-decoration-none footer-link">Tất cả tour</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Liên hệ</h5>
+                    <p><i class="fas fa-envelope me-2"></i>support@dtravel.com</p>
+                    <p><i class="fas fa-phone me-2"></i>+84 123 456 789</p>
+                    <p><i class="fas fa-map-marker-alt me-2"></i>123 Đường ABC, Quận XYZ, TP.HCM</p>
+                    <div class="social-icons mt-3">
+                        <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-light">
+            <div class="text-center text-white-50">
+                <p class="mb-0">© 2025 D-Travel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/client/alltour.js"></script>
+    <script>
+    // Xử lý lỗi runtime.lastError từ browser extensions
+    window.addEventListener('error', function(e) {
+        if (e && e.message && (
+            e.message.indexOf('runtime.lastError') > -1 ||
+            e.message.indexOf('Could not establish connection') > -1 ||
+            e.message.indexOf('Receiving end does not exist') > -1
+        )) {
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            return false;
+        }
+    }, true);
+
+    window.addEventListener('unhandledrejection', function(e) {
+        if (e && e.reason && e.reason.message && (
+            e.reason.message.indexOf('runtime.lastError') > -1 ||
+            e.reason.message.indexOf('Could not establish connection') > -1 ||
+            e.reason.message.indexOf('Receiving end does not exist') > -1
+        )) {
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // Parallax effect
+    (function(){
+        const parallax = document.querySelector('.contents');
+        const layer1 = document.querySelector('.layer-1');
+        const layer2 = document.querySelector('.layer-2');
+        
+        if (!parallax || !layer1 || !layer2) return;
+        
+        const halfWidth = window.innerWidth / 2;
+        const halfHeight = window.innerHeight / 2;
+        
+        parallax.addEventListener('mousemove', function(e) {
+            const rateX = e.clientX / halfWidth - 1;
+            const rateY = e.clientY / halfHeight - 1;
+            
+            layer1.style.transform = `translate(${rateX * 10}px, ${rateY * 20}px)`;
+            layer2.style.transform = `translate(${rateX * 10}px, ${rateY * 20}px)`;
+        });
+    })();
+    </script>
+    <!-- Chatbox CSS -->
+    <link rel="stylesheet" href="css/chatbox.css">
+    <!-- Chatbox JS -->
+    <script src="js/chatbox.js"></script>
+</body>
+</html>

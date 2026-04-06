@@ -1,0 +1,2609 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trang Quản Trị - Travel Website</title>
+    <!-- Script sửa lỗi runtime.lastError -->
+    <script>
+    // Ngăn chặn lỗi runtime.lastError hiển thị trong console
+    window.addEventListener('error', function(e) {
+        if (e && e.message && e.message.indexOf('runtime.lastError') > -1) {
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            console.warn('Đã chặn lỗi runtime.lastError:', e.message);
+            return false;
+        }
+    }, true);
+
+    // Xử lý lỗi không bắt được
+    window.addEventListener('unhandledrejection', function(e) {
+        if (e && e.reason && e.reason.message && e.reason.message.indexOf('runtime.lastError') > -1) {
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            console.warn('Đã chặn lỗi runtime.lastError không xử lý:', e.reason.message);
+            return false;
+        }
+    });
+
+    // Kiểm tra token khi trang tải
+    window.addEventListener('DOMContentLoaded', function() {
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+        
+        if (!token || !user || (user.loai_tai_khoan !== 'Admin' && user.role !== 'Admin')) {
+            window.location.href = '/login.html';
+        }
+    });
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/admin.css" rel="stylesheet">
+    <style>
+        html, body {
+          overflow-x: hidden;
+        }
+        .main-content {
+          padding: 20px;
+          overflow-x: hidden;
+        }
+        canvas {
+          width: 100% !important;
+          height: auto !important;
+          display: block;
+        }
+        /* Fix khoảng trống messages - override inline styles */
+        body.messages-active .main-content {
+          padding: 0 !important;
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+          padding-top: 0 !important;
+          padding-bottom: 0 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid px-0">
+        <div class="row g-0">
+            <!-- Modern Sidebar với Categories -->
+            <div class="col-auto p-0">
+                <div class="admin-sidebar">
+                    <!-- Sidebar Header -->
+                    <div class="sidebar-header">
+                        <div class="sidebar-logo">
+                            <div class="logo-icon">
+                                <i class="fas fa-plane"></i>
+                            </div>
+                            <div class="logo-text">
+                                <h4>Travel Admin</h4>
+                                <p>Quản lý tour du lịch</p>
+                            </div>
+                        </div>
+                        <button class="btn-close-sidebar" id="closeSidebarBtn" title="Đóng sidebar">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- Navigation Menu -->
+                    <nav class="sidebar-nav">
+                        <!-- HỆ THỐNG -->
+                        <div class="nav-category">
+                            <div class="category-header" data-category="system">
+                                <span class="category-title">HỆ THỐNG</span>
+                                <i class="fas fa-chevron-down category-icon"></i>
+                            </div>
+                            <div class="category-items" id="category-system">
+                                <a class="nav-item" href="#dashboard" id="navDashboard">
+                                    <i class="fas fa-th-large"></i>
+                                    <span>Tổng quan</span>
+                                </a>
+                                <!-- <a class="nav-item" href="#statistics" id="navStatistics">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <span>Thống kê - Báo cáo</span>
+                                </a>
+                                <a class="nav-item" href="#settings" id="navSettings">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Cài đặt hệ thống</span>
+                                </a> -->
+                            </div>
+                        </div>
+
+                        <!-- QUẢN LÝ NỘI DUNG -->
+                        <div class="nav-category">
+                            <div class="category-header" data-category="content">
+                                <span class="category-title">QUẢN LÝ NỘI DUNG</span>
+                                <i class="fas fa-chevron-down category-icon"></i>
+                            </div>
+                            <div class="category-items" id="category-content">
+                                <a class="nav-item" href="#tours" id="navTours">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                    <span>Quản lý Tour</span>
+                                    <span class="nav-badge" id="badge-tours" style="display: none;">0</span>
+                                </a>
+                                <a class="nav-item" href="#destinations" id="navDestinations">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Quản lý Điểm đến</span>
+                                </a>
+                                <a class="nav-item" href="#services" id="navServices">
+                                    <i class="fas fa-concierge-bell"></i>
+                                    <span>Quản lý Dịch vụ</span>
+                                </a>
+                                <a class="nav-item" href="#schedules" id="navSchedules">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Quản lý Lịch khởi hành</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- QUẢN LÝ KINH DOANH -->
+                        <div class="nav-category">
+                            <div class="category-header" data-category="business">
+                                <span class="category-title">QUẢN LÝ KINH DOANH</span>
+                                <i class="fas fa-chevron-down category-icon"></i>
+                            </div>
+                            <div class="category-items" id="category-business">
+                                <a class="nav-item" href="#bookings" id="navBookings">
+                                    <i class="fas fa-book-open"></i>
+                                    <span>Quản lý Booking</span>
+                                    <span class="nav-badge" id="badge-bookings" style="display: none;">0</span>
+                                </a>
+                                <a class="nav-item" href="#paymentConfirmation" id="navPaymentConfirmation">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>Xác nhận thanh toán</span>
+                                    <span class="nav-badge" id="badge-payment" style="display: none;">0</span>
+                                </a>
+                                <a class="nav-item" href="#tickets" id="navTickets">
+                                    <i class="fas fa-ticket-alt"></i>
+                                    <span>Quản lý Vé</span>
+                                </a>
+                                <a class="nav-item" href="#promotions" id="navPromotions">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Quản lý Khuyến mãi</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- QUẢN LÝ NGƯỜI DÙNG -->
+                        <div class="nav-category">
+                            <div class="category-header" data-category="users">
+                                <span class="category-title">QUẢN LÝ NGƯỜI DÙNG</span>
+                                <i class="fas fa-chevron-right category-icon"></i>
+                            </div>
+                            <div class="category-items collapsed" id="category-users">
+                                <a class="nav-item" href="#users" id="navUsers">
+                                    <i class="fas fa-users"></i>
+                                    <span>Quản lý người dùng</span>
+                                </a>
+                                <a class="nav-item" href="#guides" id="navGuides">
+                                    <i class="fas fa-user-tie"></i>
+                                    <span>Quản lý Hướng dẫn viên</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- GIAO TIẾP & ĐÁNH GIÁ -->
+                        <div class="nav-category">
+                            <div class="category-header" data-category="communication">
+                                <span class="category-title">GIAO TIẾP & ĐÁNH GIÁ</span>
+                                <i class="fas fa-chevron-down category-icon"></i>
+                            </div>
+                            <div class="category-items" id="category-communication">
+                                <a class="nav-item active" href="#messages" id="navMessages">
+                                    <i class="fas fa-comments"></i>
+                                    <span>Tin nhắn</span>
+                                    <span class="nav-badge" id="badge-messages" style="display: none;">0</span>
+                                </a>
+                                <a class="nav-item" href="#ratings" id="navRatings">
+                                    <i class="fas fa-star"></i>
+                                    <span>Quản lý đánh giá</span>
+                                    <span class="nav-badge" id="badge-ratings" style="display: none;">0</span>
+                                </a>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <!-- Logout Button -->
+                    <div class="sidebar-footer">
+                        <a class="nav-item logout-item" href="#" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Đăng xuất</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <div class="col p-0">
+                <div class="main-content">
+                    <!-- Admin Header - Ẩn khi ở section Messages -->
+                    <div class="admin-header" id="adminHeader">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2 id="sectionTitle">Tổng quan hệ thống</h2>
+                            <div class="user-info d-flex align-items-center">
+                                <!-- Notification Bell -->
+                                <div class="position-relative me-3">
+                                    <button class="btn btn-link text-dark p-0 position-relative" id="notificationBell" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.5rem;">
+                                        <i class="fas fa-bell"></i>
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationBadge" style="display: none;">
+                                            0
+                                        </span>
+                                    </button>
+                                    <!-- Dropdown notifications -->
+                                    <ul class="dropdown-menu dropdown-menu-end" id="notificationDropdown" style="min-width: 350px; max-height: 500px; overflow-y: auto;">
+                                        <li><h6 class="dropdown-header">Thông báo đặt tour</h6></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li id="notificationList">
+                                            <div class="px-3 py-2 text-muted text-center">
+                                                <small>Chưa có thông báo mới</small>
+                                            </div>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-center" href="#" id="markAllAsRead" style="display: none;">Đánh dấu tất cả đã đọc</a></li>
+                                    </ul>
+                                </div>
+                                <span id="adminName"></span>
+                                <i class="fas fa-user-circle ms-2"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alert Container -->
+                    <div id="alertContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
+
+                    <!-- Content sections -->
+                    <div class="content-wrapper">
+                        <!-- Dashboard Section / Thống kê - Báo cáo -->
+                        <div id="dashboardSection" class="content-section active">
+                            <div class="row">
+                                <div class="col-md-4 mb-4">
+                                    <div class="card text-white bg-primary">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Tổng số tour đang hoạt động</h5>
+                                            <p class="card-text h2" id="activeTours">0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="card text-white bg-success">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Booking theo tháng</h5>
+                                            <p class="card-text h2" id="monthlyBookings">0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="card text-white bg-info">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Doanh thu theo tour / dịch vụ</h5>
+                                            <p class="card-text h2" id="revenueByItem">0đ</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="card text-white bg-warning">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Khách hàng đặt nhiều nhất</h5>
+                                            <p class="card-text h2" id="topCustomer">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Thêm phần biểu đồ doanh thu -->
+                            <div class="row mt-4">
+                                <!-- Biểu đồ doanh thu theo tháng -->
+                                <div class="col-xl-6">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <i class="fas fa-chart-bar me-1"></i>
+                                            Doanh thu theo tháng
+                                            <select id="yearSelect" class="form-select form-select-sm float-end" style="width: auto;">
+                                                <!-- Sẽ được điền bởi JavaScript -->
+                                            </select>
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="monthlyRevenueChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Biểu đồ doanh thu theo năm -->
+                                <div class="col-xl-6">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <i class="fas fa-chart-bar me-1"></i>
+                                            Doanh thu theo năm
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="yearlyRevenueChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tours Section -->
+                        <div id="toursSection" class="content-section">
+                            <div class="section-header">
+                                <h3>Quản lý Tour du lịch</h3>
+                                <div class="section-actions">
+                                    <button class="btn btn-refresh" id="refreshToursBtn">
+                                        <i class="fas fa-sync"></i> Tải lại dữ liệu
+                                    </button>
+                                    <button class="btn btn-add" id="addTourBtn">
+                                        <i class="fas fa-plus"></i> Thêm Tour mới
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="form-control" placeholder="Tìm kiếm tour..." id="tourSearchInput">
+                            </div>
+
+                            <div id="tourFormContainer" class="form-container" style="display: none;">
+                                <h4 id="formTitle">Thêm Tour mới</h4>
+                                <form id="tourForm">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="maTour" class="form-label">Mã Tour</label>
+                                            <input type="text" class="form-control" id="maTour" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="tenTour" class="form-label">Tên Tour</label>
+                                            <input type="text" class="form-control" id="tenTour" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="thoiGian" class="form-label">Thời gian (số ngày)</label>
+                                            <input type="number" class="form-control" id="thoiGian" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="tinhTrang" class="form-label">Tình trạng</label>
+                                            <select class="form-control" id="tinhTrang" required>
+                                                <option value="Còn chỗ">Còn chỗ</option>
+                                                <option value="Hết chỗ">Hết chỗ</option>
+                                                <option value="Sắp mở">Sắp mở</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="loaiTour" class="form-label">Loại Tour</label>
+                                            <select class="form-control" id="loaiTour" required>
+                                                <option value="trong_nuoc">Trong nước</option>
+                                                <option value="nuoc_ngoai">Nước ngoài</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="hinhAnh" class="form-label">Hình ảnh</label>
+                                            <input type="file" class="form-control" id="hinhAnh" accept="image/*">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="giaNguoiLon" class="form-label">Giá người lớn</label>
+                                            <input type="number" class="form-control" id="giaNguoiLon" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="giaTreEm" class="form-label">Giá trẻ em</label>
+                                            <input type="number" class="form-control" id="giaTreEm" required>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <button type="button" class="btn btn-secondary" onclick="cancelTourForm()">Hủy</button>
+                                        <button type="submit" class="btn btn-primary">Lưu</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="table-container">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Mã Tour</th>
+                                                <th>Tên Tour</th>
+                                                <th>Thời gian</th>
+                                                <th>Tình trạng</th>
+                                                <th>Loại Tour</th>
+                                                <th>Giá người lớn</th>
+                                                <th>Giá trẻ em</th>
+                                                <th>Hình ảnh</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="toursList">
+                                            <!-- Tour items will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bookings Section -->
+                        <div id="bookingsSection" class="content-section">
+                            <div class="row mb-3">
+                                <div class="col-md-6"><h3></h3></div>
+                                <div class="col-md-6 text-end">
+                                    <div class="input-group">
+                                        <select id="bookingStatusFilter" class="form-select me-2">
+                                            <option value="all">Tất cả trạng thái</option>
+                                            <option value="Chờ thanh toán">Chờ thanh toán</option>
+                                            <option value="Đã thanh toán">Đã thanh toán</option>
+                                            <option value="Đã hủy">Đã hủy</option>
+                                        </select>
+                                        <input type="text" id="bookingSearchInput" class="form-control" placeholder="Tìm theo mã booking, khách hàng...">
+                                        <button class="btn btn-primary" id="bookingSearchBtn">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Booking Detail Modal - REMOVED: Duplicate modal, using the one at the bottom of the page -->
+                            
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Mã Booking</th>
+                                            <th>Khách hàng</th>
+                                            <th>Ngày đặt</th>
+                                            <th>Người lớn</th>
+                                            <th>Trẻ em</th>
+                                            <th>Mã KM</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bookingsList">
+                                        <!-- Booking items will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Payment Confirmation Section -->
+                        <div id="paymentConfirmationSection" class="content-section">
+                            <div class="section-header d-flex justify-content-between align-items-center mb-4">
+                                <h3><i class="fas fa-credit-card me-2"></i>Xác nhận thanh toán</h3>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-primary" id="refreshPendingPaymentsBtn">
+                                        <i class="fas fa-sync-alt"></i> Làm mới
+                                    </button>
+                                    <span class="badge bg-warning fs-6" id="pendingPaymentsCount">0</span>
+                                </div>
+                            </div>
+
+                            <!-- Statistics Cards -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="card bg-warning text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h4 id="totalPendingPayments">0</h4>
+                                                    <p class="mb-0">Chờ xác nhận</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fas fa-clock fa-2x"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h4 id="totalConfirmedToday">0</h4>
+                                                    <p class="mb-0">Xác nhận hôm nay</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fas fa-check-circle fa-2x"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-info text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h4 id="totalRevenueToday">0đ</h4>
+                                                    <p class="mb-0">Doanh thu hôm nay</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fas fa-dollar-sign fa-2x"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-primary text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h4 id="averageConfirmationTime">0h</h4>
+                                                    <p class="mb-0">Thời gian TB</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fas fa-stopwatch fa-2x"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Search and Filter -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text" id="paymentSearchInput" class="form-control" placeholder="Tìm theo mã booking, khách hàng...">
+                                        <button class="btn btn-primary" id="paymentSearchBtn">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <div class="btn-group" role="group">
+                                        <input type="radio" class="btn-check" name="paymentFilter" id="filterAll" value="all" checked>
+                                        <label class="btn btn-outline-secondary" for="filterAll">Tất cả</label>
+                                        
+                                        <input type="radio" class="btn-check" name="paymentFilter" id="filterPending" value="pending">
+                                        <label class="btn btn-outline-warning" for="filterPending">Chờ xác nhận</label>
+                                        
+                                        <input type="radio" class="btn-check" name="paymentFilter" id="filterConfirmed" value="confirmed">
+                                        <label class="btn btn-outline-success" for="filterConfirmed">Đã xác nhận</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pending Payments Table -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Mã Booking</th>
+                                                    <th>Khách hàng</th>
+                                                    <th>Tour</th>
+                                                    <th>Ngày đặt</th>
+                                                    <th>Số người</th>
+                                                    <th>Tổng tiền</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="pendingPaymentsList">
+                                                <tr>
+                                                    <td colspan="8" class="text-center">
+                                                        <div class="spinner-border text-primary" role="status">
+                                                            <span class="visually-hidden">Đang tải...</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Confirmation Modal -->
+                        <div class="modal fade" id="paymentConfirmationModal" tabindex="-1" aria-labelledby="paymentConfirmationModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="paymentConfirmationModalLabel">
+                                            <i class="fas fa-credit-card me-2"></i>Xác nhận thanh toán
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="paymentConfirmationContent">
+                                            <!-- Content will be loaded dynamically -->
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                        <button type="button" class="btn btn-success" id="confirmPaymentBtn">
+                                            <i class="fas fa-check-circle me-1"></i>Xác nhận thanh toán
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Success Modal -->
+                        <!-- Modal Thêm/Sửa Hướng dẫn viên -->
+                        <div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="guideModalLabel">Thêm Hướng dẫn viên mới</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form id="guideForm">
+                                        <div class="modal-body">
+                                            <input type="hidden" id="guideMaHuongDanVien">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Email *</label>
+                                                    <input type="email" class="form-control" id="guideEmail" required>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Mật khẩu <span id="guidePasswordLabel">*</span></label>
+                                                    <input type="password" class="form-control" id="guidePassword">
+                                                    <small class="text-muted" id="guidePasswordHint">Để trống nếu không đổi mật khẩu</small>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Tên hướng dẫn viên *</label>
+                                                    <input type="text" class="form-control" id="guideTen" required>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Ngày sinh *</label>
+                                                    <input type="date" class="form-control" id="guideNgaySinh" required>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Giới tính *</label>
+                                                    <select class="form-select" id="guideGioiTinh" required>
+                                                        <option value="Nam">Nam</option>
+                                                        <option value="Nữ">Nữ</option>
+                                                        <option value="Khác">Khác</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Số điện thoại *</label>
+                                                    <input type="tel" class="form-control" id="guideSoDienThoai" required>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">CCCD *</label>
+                                                    <input type="text" class="form-control" id="guideCccd" required>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Trạng thái *</label>
+                                                    <select class="form-select" id="guideTrangThai" required>
+                                                        <option value="Hoat_dong">Đang hoạt động</option>
+                                                        <option value="Nghi_phep">Nghỉ phép</option>
+                                                        <option value="Nghi_viec">Nghỉ việc</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Địa chỉ</label>
+                                                <input type="text" class="form-control" id="guideDiaChi">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Ngôn ngữ</label>
+                                                <input type="text" class="form-control" id="guideNgonNgu" placeholder="VD: Tiếng Việt, English, 中文">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Kinh nghiệm</label>
+                                                <textarea class="form-control" id="guideKinhNghiem" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                            <button type="submit" class="btn btn-primary">Lưu</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="paymentSuccessModal" tabindex="-1" aria-labelledby="paymentSuccessModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-success text-white">
+                                        <h5 class="modal-title" id="paymentSuccessModalLabel">
+                                            <i class="fas fa-check-circle me-2"></i>Xác nhận thanh toán thành công
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="text-center mb-4">
+                                            <i class="fas fa-check-circle text-success fa-4x mb-3"></i>
+                                            <h4 class="text-success">Thanh toán đã được xác nhận!</h4>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6><i class="fas fa-receipt me-2"></i>Thông tin hóa đơn</h6>
+                                                <p><strong>Mã hóa đơn:</strong> <span id="successInvoiceId"></span></p>
+                                                <p><strong>Ngày lập:</strong> <span id="successInvoiceDate"></span></p>
+                                                <p><strong>Tổng tiền:</strong> <span id="successTotalAmount"></span></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6><i class="fas fa-ticket-alt me-2"></i>Thông tin vé</h6>
+                                                <p><strong>Tổng số vé:</strong> <span id="successTotalTickets"></span></p>
+                                                <p><strong>Trạng thái:</strong> <span class="badge bg-success">Đã tạo</span></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-3">
+                                            <h6><i class="fas fa-list me-2"></i>Danh sách vé</h6>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Số vé</th>
+                                                            <th>Giá vé</th>
+                                                            <th>Trạng thái</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="successTicketsList">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đóng</button>
+                                        <button type="button" class="btn btn-outline-primary" id="printInvoiceBtn">
+                                            <i class="fas fa-print me-1"></i>In hóa đơn
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Schedules Section -->
+                        <div id="schedulesSection" class="content-section">
+                            <div class="section-header">
+                                <h3>Quản lý Lịch khởi hành</h3>
+                                <div class="section-actions">
+                                    <button class="btn btn-add" id="addScheduleBtn">
+                                        <i class="fas fa-calendar-plus"></i> Thêm Lịch mới
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Filter and Search -->
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <select class="form-select" id="scheduleStatusFilter">
+                                        <option value="all">Tất cả trạng thái</option>
+                                        <option value="Còn chỗ">Còn chỗ</option>
+                                        <option value="Hết chỗ">Hết chỗ</option>
+                                        <option value="Đang diễn ra">Đang diễn ra</option>
+                                        <option value="Đã diễn ra">Đã diễn ra</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="date" class="form-control" id="scheduleDateFrom" placeholder="Từ ngày">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="date" class="form-control" id="scheduleDateTo" placeholder="Đến ngày">
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="search-box">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" class="form-control" placeholder="Tìm kiếm..." id="scheduleSearchInput">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Form Container -->
+                            <div id="scheduleFormContainer" class="card mb-4" style="display:none;">
+                                <div class="card-header">
+                                    <h5 class="mb-0" id="scheduleFormTitle">Thêm Lịch khởi hành</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="scheduleForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="scheduleTourId" class="form-label">
+                                                    Chọn Tour <span class="text-danger">*</span>
+                                                </label>
+                                                <select class="form-select" id="scheduleTourId" required>
+                                                    <option value="">-- Chọn Tour --</option>
+                                                </select>
+                                                <small class="form-text text-muted" id="tourInfo"></small>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label for="scheduleSeats" class="form-label">
+                                                    Số chỗ <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="number" class="form-control" id="scheduleSeats" min="1" required>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label for="scheduleId" class="form-label">Mã Lịch</label>
+                                                <input type="text" class="form-control" id="scheduleId" readonly>
+                                                <small class="form-text text-muted">Tự động tạo</small>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="scheduleStart" class="form-label">
+                                                    Ngày bắt đầu <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="date" class="form-control" id="scheduleStart" required onchange="validateScheduleDates()">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="scheduleEnd" class="form-label">
+                                                    Ngày kết thúc <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="date" class="form-control" id="scheduleEnd" required onchange="validateScheduleDates()">
+                                                <div class="invalid-feedback d-block" id="scheduleDateError" style="display: none; color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem;">
+                                                    <i class="fas fa-exclamation-circle"></i> Ngày kết thúc phải sau ngày bắt đầu
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-10 mb-3">
+                                                <label for="scheduleGuide" class="form-label">Hướng dẫn viên (tùy chọn)</label>
+                                                <select class="form-select" id="scheduleGuide">
+                                                    <option value="">-- Chọn HDV --</option>
+                                                </select>
+                                                <small class="form-text text-muted" id="guideInfo">Chọn ngày để xem HDV rảnh</small>
+                                            </div>
+                                            <div class="col-md-2 mb-3 d-flex align-items-end">
+                                                <button type="button" class="btn btn-outline-danger w-100" id="removeGuideBtn" onclick="removeGuideFromScheduleForm()" style="display: none;" title="Gỡ HDV khỏi lịch này">
+                                                    <i class="fas fa-times"></i> Gỡ HDV
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <button type="button" class="btn btn-secondary me-2" id="cancelScheduleBtn">Hủy</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save"></i> Lưu
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <!-- Table -->
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Mã Lịch</th>
+                                            <th>Tên Tour</th>
+                                            <th>Ngày BD</th>
+                                            <th>Ngày KT</th>
+                                            <th>Số chỗ</th>
+                                            <th>Đã đặt</th>
+                                            <th>Còn lại</th>
+                                            <th>Hướng dẫn viên</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="schedulesList">
+                                        <tr><td colspan="10" class="text-center">Đang tải dữ liệu...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Guides Section - Quản lý Hướng dẫn viên -->
+                        <div id="guidesSection" class="content-section">
+                            <div class="section-header">
+                                <h3>Quản lý Hướng dẫn viên</h3>
+                                <div class="section-actions">
+                                    <button class="btn btn-refresh" id="refreshGuidesBtn">
+                                        <i class="fas fa-sync"></i> Tải lại
+                                    </button>
+                                    <button class="btn btn-add" id="addGuideBtn">
+                                        <i class="fas fa-plus"></i> Thêm HDV mới
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Filter và Search -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <select class="form-select" id="guideStatusFilter">
+                                        <option value="all">Tất cả</option>
+                                        <option value="Hoat_dong">Đang hoạt động</option>
+                                        <option value="Nghi_phep">Nghỉ phép</option>
+                                        <option value="Nghi_viec">Nghỉ việc</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="search-box">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" class="form-control" placeholder="Tìm kiếm theo tên, SĐT, email..." id="guideSearchInput">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Table -->
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Mã HDV</th>
+                                            <th>Tên</th>
+                                            <th>SĐT</th>
+                                            <th>Email</th>
+                                            <th>Trạng thái</th>
+                                            <th>Số tour</th>
+                                            <th>Đánh giá TB</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="guidesList">
+                                        <!-- Guide items will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Cancel Requests Section -->
+                        <div id="cancelRequestsSection" class="content-section">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <h3>Quản lý Yêu cầu hủy tour</h3>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <a href="admin/cancel-requests.html" class="btn btn-primary">
+                                        <i class="fas fa-external-link-alt"></i> Mở trang quản lý yêu cầu hủy
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-body">
+                                    <p>Tại đây bạn có thể xem và quản lý các yêu cầu hủy tour từ khách hàng.</p>
+                                    <p>Các chức năng chính:</p>
+                                    <ul>
+                                        <li>Xem danh sách các yêu cầu hủy tour</li>
+                                        <li>Chấp nhận hoặc từ chối yêu cầu hủy</li>
+                                        <li>Xem chi tiết thông tin yêu cầu và booking</li>
+                                    </ul>
+                                    <p>Nhấn vào nút "Mở trang quản lý yêu cầu hủy" để truy cập trang quản lý chi tiết.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Users Section -->
+                        <div id="usersSection" class="content-section">
+                            <!-- Modal chỉnh sửa người dùng -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <form id="editUserForm">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Chỉnh sửa thông tin người dùng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="editUserName" class="form-label">Tên khách hàng</label>
+                  <input type="text" class="form-control" id="editUserName" required>
+                </div>
+                <div class="mb-3">
+                  <label for="editUserEmail" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="editUserEmail" required>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+                            <h3></h3>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên KH</th>
+                                            <th>Email</th>
+                                            <th>Số booking</th>
+                                            <th>Số hóa đơn</th>
+                                            <th>Trạng thái</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersList">
+                                        <tr><td colspan="6">Đang tải...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Ratings Section -->
+                        <div id="ratingsSection" class="content-section">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3>Quản lý đánh giá</h3>
+                                <div class="d-flex gap-2">
+                                    <select id="tourFilter" class="form-select" style="width: auto;">
+                                        <option value="">Tất cả tour</option>
+                                    </select>
+                                    <select id="ratingFilter" class="form-select" style="width: auto;">
+                                        <option value="">Tất cả đánh giá</option>
+                                        <option value="5">5 sao</option>
+                                        <option value="4">4 sao</option>
+                                        <option value="3">3 sao</option>
+                                        <option value="2">2 sao</option>
+                                        <option value="1">1 sao</option>
+                                    </select>
+                                    <button class="btn btn-primary" onclick="loadRatings()">
+                                        <i class="fas fa-sync-alt"></i> Làm mới
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Statistics Cards -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="card bg-primary text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h4 id="totalRatings">0</h4>
+                                                    <p class="mb-0">Tổng đánh giá</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fas fa-star fa-2x"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h4 id="averageRating">0.0</h4>
+                                                    <p class="mb-0">Điểm trung bình</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fas fa-chart-line fa-2x"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-warning text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h4 id="fiveStarRatings">0</h4>
+                                                    <p class="mb-0">5 sao</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fas fa-star fa-2x"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-info text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h4 id="recentRatings">0</h4>
+                                                    <p class="mb-0">Tuần này</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fas fa-clock fa-2x"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ratings List -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="ratingsList">
+                                        <div class="text-center py-4">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Đang tải...</span>
+                                            </div>
+                                            <p class="mt-2">Đang tải đánh giá...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Promotions Section -->
+                        <div id="promotionsSection" class="content-section">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3>Quản lý khuyến mãi</h3>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-primary" id="viewPromotionStatsBtn">
+                                        <i class="fas fa-chart-bar me-1"></i> Thống kê
+                                    </button>
+                                    <button class="btn btn-primary" id="addPromotionBtn">
+                                        <i class="fas fa-plus me-1"></i> Thêm khuyến mãi
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Tabs Navigation -->
+                            <ul class="nav nav-tabs mb-4" id="promotionTabs" role="tablist" style="border-bottom: 2px solid #dee2e6;">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="global-discount-tab" data-bs-toggle="tab" data-bs-target="#global-discount" type="button" role="tab">
+                                        <i class="fas fa-globe me-2"></i>Giảm giá toàn site
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="coupon-management-tab" data-bs-toggle="tab" data-bs-target="#coupon-management" type="button" role="tab">
+                                        <i class="fas fa-ticket-alt me-2"></i>Quản lý Coupon
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="attach-coupon-tab" data-bs-toggle="tab" data-bs-target="#attach-coupon" type="button" role="tab">
+                                        <i class="fas fa-link me-2"></i>Gắn Coupon vào Tour
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="promotion-list-tab" data-bs-toggle="tab" data-bs-target="#promotion-list" type="button" role="tab">
+                                        <i class="fas fa-list me-2"></i>Danh sách khuyến mãi
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <!-- Tab Content -->
+                            <div class="tab-content" id="promotionTabContent">
+                                <!-- Tab 1: Giảm giá toàn site -->
+                                <div class="tab-pane fade show active" id="global-discount" role="tabpanel">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-4">
+                                                <i class="fas fa-globe text-primary me-2"></i>Giảm giá toàn site
+                                            </h5>
+                                            <p class="text-muted mb-4">Áp dụng giảm giá cho tất cả tour trên website</p>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold">Giảm giá toàn site (%)</label>
+                                                    <div class="input-group input-group-lg">
+                                                        <input type="number" min="0" max="100" step="0.1" class="form-control" id="globalDiscountInput" placeholder="VD: 10">
+                                                        <span class="input-group-text">%</span>
+                                                        <button class="btn btn-primary" id="saveGlobalDiscountBtn">
+                                                            <i class="fas fa-save me-1"></i> Lưu
+                                                        </button>
+                                                    </div>
+                                                    <small class="text-muted mt-2 d-block">
+                                                        <i class="fas fa-info-circle me-1"></i>Áp dụng cho tất cả tour trên website
+                                                    </small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="alert alert-info">
+                                                        <h6><i class="fas fa-lightbulb me-2"></i>Lưu ý:</h6>
+                                                        <ul class="mb-0 small">
+                                                            <li>Giảm giá toàn site sẽ áp dụng cho tất cả tour</li>
+                                                            <li>Nếu tour có coupon riêng, coupon sẽ được ưu tiên</li>
+                                                            <li>Giá trị từ 0% đến 100%</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tab 2: Quản lý Coupon -->
+                                <div class="tab-pane fade" id="coupon-management" role="tabpanel">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-4">
+                                                <i class="fas fa-ticket-alt text-success me-2"></i>Tạo/Cập nhật Coupon
+                                            </h5>
+                                            
+                                            <form id="couponForm" class="row g-3">
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-bold">Mã coupon <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="couponCodeInput" placeholder="VD: SUMMER10" required>
+                                                    <small class="text-muted">Mã coupon phải duy nhất</small>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-bold">Giá trị (%) <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <input type="number" min="0" max="100" step="0.1" class="form-control" id="couponPercentInput" placeholder="VD: 10" required>
+                                                        <span class="input-group-text">%</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-bold">Tên khuyến mãi</label>
+                                                    <input type="text" class="form-control" id="couponNameInput" placeholder="VD: Giảm giá mùa hè">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold">Ngày bắt đầu</label>
+                                                    <input type="datetime-local" class="form-control" id="couponStartDateInput">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold">Ngày kết thúc</label>
+                                                    <input type="datetime-local" class="form-control" id="couponEndDateInput">
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label fw-bold">Mô tả</label>
+                                                    <textarea class="form-control" id="couponDescriptionInput" rows="3" placeholder="Mô tả về coupon này..."></textarea>
+                                                </div>
+                                                <div class="col-12">
+                                                    <button type="button" class="btn btn-success" id="saveCouponBtn">
+                                                        <i class="fas fa-save me-1"></i> Lưu coupon
+                                                    </button>
+                                                    <button type="reset" class="btn btn-outline-secondary ms-2">
+                                                        <i class="fas fa-redo me-1"></i> Làm mới
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tab 3: Gắn Coupon vào Tour -->
+                                <div class="tab-pane fade" id="attach-coupon" role="tabpanel">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-4">
+                                                <i class="fas fa-link text-warning me-2"></i>Gắn Coupon vào Tour
+                                            </h5>
+                                            
+                                            <div class="row g-3 mb-4">
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold">Chọn Coupon</label>
+                                                    <select class="form-select" id="attachCouponSelect">
+                                                        <option value="">-- Chọn coupon --</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold">Mã tour (tự động điền khi sửa tour)</label>
+                                                    <input type="text" class="form-control" id="attachTourIdInput" placeholder="Nhập mã tour hoặc để trống để chọn nhiều tour">
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Chọn nhiều tour (nếu để trống mã tour ở trên)</label>
+                                                <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                                                    <div id="tourCheckboxList" class="row g-2">
+                                                        <div class="col-12 text-center text-muted">
+                                                            <i class="fas fa-spinner fa-spin me-2"></i>Đang tải danh sách tour...
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-info-circle me-1"></i>Chọn nhiều tour để gắn coupon cùng lúc
+                                                </small>
+                                            </div>
+
+                                            <button class="btn btn-primary" id="attachCouponBtn">
+                                                <i class="fas fa-link me-1"></i> Gắn coupon vào tour đã chọn
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tab 4: Danh sách khuyến mãi -->
+                                <div class="tab-pane fade" id="promotion-list" role="tabpanel">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <h5 class="card-title mb-0">
+                                                    <i class="fas fa-list text-info me-2"></i>Danh sách khuyến mãi
+                                                </h5>
+                                                <div class="d-flex gap-2">
+                                                    <input type="text" class="form-control" id="promotionSearchInput" placeholder="Tìm kiếm theo tên, mã..." style="width: 250px;">
+                                                    <select class="form-select" id="promotionStatusFilter" style="width: 150px;">
+                                                        <option value="">Tất cả trạng thái</option>
+                                                        <option value="active">Đang hoạt động</option>
+                                                        <option value="inactive">Không hoạt động</option>
+                                                        <option value="expired">Đã hết hạn</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-hover" id="promotionTable">
+                                                    <thead class="table-dark">
+                                                        <tr>
+                                                            <th>Mã KM</th>
+                                                            <th>Tên khuyến mãi</th>
+                                                            <th>Giá trị (%)</th>
+                                                            <th>Ngày bắt đầu</th>
+                                                            <th>Ngày kết thúc</th>
+                                                            <th>Trạng thái</th>
+                                                            <th>Số tour áp dụng</th>
+                                                            <th>Thao tác</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="promotionTableBody">
+                                                        <tr>
+                                                            <td colspan="8" class="text-center">
+                                                                <div class="spinner-border text-primary" role="status">
+                                                                    <span class="visually-hidden">Đang tải...</span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <style>
+                            /* CSS cho phần quản lý khuyến mãi - Sửa lỗi hiển thị tabs */
+                            #promotionsSection .nav-tabs {
+                                border-bottom: 2px solid #dee2e6;
+                                margin-bottom: 20px;
+                            }
+                            
+                            /* Override nav-link từ admin.css để không ảnh hưởng đến tabs */
+                            #promotionsSection .nav-tabs .nav-link {
+                                color: #495057 !important;
+                                background-color: transparent !important;
+                                border: 1px solid transparent;
+                                border-top-left-radius: 0.25rem;
+                                border-top-right-radius: 0.25rem;
+                                padding: 0.75rem 1.5rem;
+                                font-weight: 500;
+                                transition: all 0.3s ease;
+                            }
+                            
+                            #promotionsSection .nav-tabs .nav-link:hover {
+                                border-color: #e9ecef #e9ecef #dee2e6;
+                                background-color: #f8f9fa !important;
+                                color: #007bff !important;
+                            }
+                            
+                            #promotionsSection .nav-tabs .nav-link.active {
+                                color: #495057 !important;
+                                background-color: #fff !important;
+                                border-color: #dee2e6 #dee2e6 #fff;
+                                border-bottom-color: transparent;
+                                font-weight: 600;
+                            }
+                            
+                            #promotionsSection .tab-content {
+                                background-color: transparent;
+                                padding: 0;
+                            }
+                            
+                            /* Sửa lỗi tab-pane bị ẩn - chỉ ẩn khi không có class show và active */
+                            #promotionsSection .tab-pane {
+                                display: none;
+                            }
+                            
+                            #promotionsSection .tab-pane.active,
+                            #promotionsSection .tab-pane.show {
+                                display: block !important;
+                                opacity: 1 !important;
+                                visibility: visible !important;
+                            }
+                            
+                            #promotionsSection .tab-pane.fade {
+                                transition: opacity 0.15s linear;
+                            }
+                            
+                            #promotionsSection .tab-pane.fade:not(.show):not(.active) {
+                                opacity: 0;
+                            }
+                            
+                            #promotionsSection .tab-pane.fade.show,
+                            #promotionsSection .tab-pane.fade.active {
+                                opacity: 1;
+                            }
+                            
+                            #promotionsSection .card {
+                                border: 1px solid #dee2e6;
+                                border-radius: 0.5rem;
+                                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+                            }
+                            
+                            #promotionsSection .card-body {
+                                padding: 1.5rem;
+                            }
+                            </style>
+                        </div>
+
+                        <!-- Settings Section -->
+                        <div id="settingsSection" class="content-section">
+                            <h3>Cài đặt hệ thống</h3>
+                            <!-- Settings content will be added here -->
+                        </div>
+
+                        <!-- Destinations Section -->
+                      <!-- PHẦN CẬP NHẬT BỐ CỤC QUẢN LÝ ĐIỂM ĐẾN -->
+<div id="destinationsSection" class="content-section">
+    <div class="section-header d-flex justify-content-between align-items-center mb-3">
+      <h3>Quản lý Điểm đến</h3>
+      <button class="btn btn-success" id="addDestinationBtn">
+        <i class="fas fa-plus"></i> Thêm Điểm đến mới
+      </button>
+    </div>
+  
+    <div class="mb-3">
+      <input type="text" id="destinationSearchInput" class="form-control" placeholder="Tìm kiếm điểm đến...">
+    </div>
+  
+    <div id="destinationsList" class="row g-3">
+      <!-- Các điểm đến sẽ được render tại đây bằng JavaScript dạng card -->
+    </div>
+  
+    <div id="tourDestinationsContainer" class="mt-5" style="display: none">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Chi tiết điểm đến cho tour</h4>
+        <div class="d-flex gap-2">
+          <select id="tourSelect" class="form-select">
+            <option value="">Chọn Tour</option>
+          </select>
+          <button class="btn btn-success" id="addTourDestinationBtn" disabled>
+            <i class="fas fa-plus"></i> Thêm điểm đến cho tour
+          </button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead class="table-dark">
+            <tr>
+              <th>Mã điểm đến</th>
+              <th>Tên điểm đến</th>
+              <th>Thứ tự</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="tourDestinationsList">
+            <!-- Nội dung động -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <style>
+  #destinationsList .card {
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+  }
+  #destinationsList .card:hover {
+    transform: scale(1.02);
+  }
+  #destinationsList .card img {
+    max-height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  #destinationsList .btn-group .btn {
+    font-size: 0.8rem;
+  }
+  </style>
+                        <!-- Services Section -->
+                        <div id="servicesSection" class="content-section">
+                            <div class="section-header d-flex justify-content-between align-items-center mb-3">
+                                <h3>Quản lý Dịch vụ</h3>
+                                <button class="btn btn-success" id="addServiceBtn">
+                                    <i class="fas fa-plus"></i> Thêm Dịch vụ mới
+                                </button>
+                            </div>
+                            
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <input type="text" id="serviceSearchInput" class="form-control" placeholder="Tìm kiếm dịch vụ...">
+                                                <button class="btn btn-primary" id="serviceSearchBtn">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 text-end">
+                                            <button class="btn btn-outline-secondary" id="refreshServicesBtn">
+                                                <i class="fas fa-sync-alt"></i> Làm mới
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Mã Dịch vụ</th>
+                                                    <th>Tên Dịch vụ</th>
+                                                    <th>Mô tả</th>
+                                                    <th>Giá</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="servicesList">
+                                                <!-- Service items will be loaded here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tickets Section -->
+               <!-- Tickets Section -->
+    <div id="ticketsSection" class="content-section">
+        <div class="row mb-3">
+            <div class="col-md-6"><h3></h3></div>
+            <div class="col-md-6 text-end">
+                <input type="text" id="filterBookingId" class="form-control d-inline-block w-50" placeholder="Lọc theo Booking ID">
+            </div>
+        </div>
+        <!-- Form quản lý vé -->
+        <div id="ticketFormContainer" class="mb-4" style="display:none;">
+            <h4 id="ticketFormTitle">Chỉnh sửa Vé</h4>
+            <form id="ticketForm">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="ticketId" class="form-label">Mã Vé</label>
+                        <input type="text" class="form-control" id="ticketId" disabled>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="ticketBookingId" class="form-label">Mã Booking</label>
+                        <input type="text" class="form-control" id="ticketBookingId" disabled>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="ticketScheduleId" class="form-label">Mã Lịch</label>
+                        <input type="text" class="form-control" id="ticketScheduleId" disabled>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="ticketPrice" class="form-label">Giá Vé (VNĐ)</label>
+                        <input type="number" class="form-control" id="ticketPrice" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="ticketStatus" class="form-label">Trạng thái vé</label>
+                        <select class="form-control" id="ticketStatus">
+                            <option value="Chua_su_dung">Chưa sử dụng</option>
+                            <option value="Da_su_dung">Đã sử dụng</option>
+                            <option value="Da_huy">Đã hủy</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-secondary me-2" id="cancelTicketBtn">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Số vé</th>
+                        <th>Mã đặt chỗ</th>
+                        <th>Mã lịch</th>
+                        <th>Giá vé</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="ticketsList">
+                    <!-- Ticket items will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Promotion Management Modals -->
+    <!-- Add/Edit Promotion Modal -->
+    <div class="modal fade" id="promotionModal" tabindex="-1" aria-labelledby="promotionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="promotionModalLabel">Thêm/Sửa Khuyến mãi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="promotionForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="promoCode" class="form-label">Mã khuyến mãi <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="promoCode" required>
+                                <small class="text-muted">VD: SUMMER10, WINTER20</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="promoName" class="form-label">Tên khuyến mãi <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="promoName" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="promoValue" class="form-label">Giá trị giảm (%) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="promoValue" min="0" max="100" step="0.01" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="promoType" class="form-label">Loại áp dụng</label>
+                                <select class="form-control" id="promoType">
+                                    <option value="global">Toàn site</option>
+                                    <option value="specific">Tour cụ thể</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="promoStartDate" class="form-label">Ngày bắt đầu</label>
+                                <input type="date" class="form-control" id="promoStartDate">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="promoEndDate" class="form-label">Ngày kết thúc</label>
+                                <input type="date" class="form-control" id="promoEndDate">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="promoDescription" class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="promoDescription" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="savePromotionBtn">Lưu khuyến mãi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Promotion Statistics Modal -->
+    <div class="modal fade" id="promotionStatsModal" tabindex="-1" aria-labelledby="promotionStatsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="promotionStatsModalLabel">Thống kê Khuyến mãi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Total Stats -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Tổng số KM</h5>
+                                    <h3 id="totalPromotions">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Tổng lượt sử dụng</h5>
+                                    <h3 id="totalUsage">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Tổng doanh thu</h5>
+                                    <h3 id="totalRevenue">0 VNĐ</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Tổng giảm giá</h5>
+                                    <h3 id="totalDiscount">0 VNĐ</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Usage Stats Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Mã KM</th>
+                                    <th>Tên khuyến mãi</th>
+                                    <th>Giá trị (%)</th>
+                                    <th>Số lượt sử dụng</th>
+                                    <th>Doanh thu</th>
+                                    <th>Giảm giá</th>
+                                </tr>
+                            </thead>
+                            <tbody id="promotionStatsTableBody">
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Đang tải...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin/admin.js"></script>
+    <script src="js/admin/admin-itinerary.js"></script>
+    <!-- Custom scripts -->
+    <script src="js/admin/admindashboard.js"></script>
+    <script src="js/admin/adminticket.js"></script>
+    <script src="js/admin/adminservices.js"></script>
+    <script src="js/admin/adminbooking.js"></script>
+    <script src="js/admin/admindestinations.js"></script>
+    <script src="js/admin/adminMclient.js"></script>
+    <script src="js/admin/admin-promotions.js"></script>
+    <script src="js/admin/admin-payment-confirmation.js"></script>
+    <!-- / Custom scripts -->
+    <script>
+        // Additional script to handle authentication
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if token is valid by making a request to the server
+            const token = localStorage.getItem('token');
+            if (token) {
+                fetch(`${CONFIG.API_BASE_URL}/auth/verify`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        // If token is invalid, redirect to login
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        window.location.href = '/login.html';
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status !== 'success' || (data.data.role !== 'Admin' && data.data.loai_tai_khoan !== 'Admin')) {
+                        // If user is not admin, redirect to home
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        window.location.href = '/login.html';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error verifying token:', error);
+                    // On error, clear localStorage and redirect to login
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '/login.html';
+                });
+            } else {
+                // No token found, redirect to login
+                window.location.href = '/login.html';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup Sidebar Categories Expand/Collapse
+            document.querySelectorAll('.category-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const category = this.closest('.nav-category');
+                    const categoryId = this.dataset.category;
+                    const categoryItems = document.getElementById(`category-${categoryId}`);
+                    
+                    if (category) {
+                        category.classList.toggle('expanded');
+                        if (categoryItems) {
+                            categoryItems.classList.toggle('collapsed');
+                        }
+                        
+                        // Update icon
+                        const icon = this.querySelector('.category-icon');
+                        if (icon) {
+                            if (category.classList.contains('expanded')) {
+                                icon.classList.remove('fa-chevron-right');
+                                icon.classList.add('fa-chevron-down');
+                            } else {
+                                icon.classList.remove('fa-chevron-down');
+                                icon.classList.add('fa-chevron-right');
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Expand default categories on load
+            document.querySelectorAll('.nav-category').forEach(category => {
+                const categoryId = category.querySelector('.category-header')?.dataset.category;
+                if (categoryId && ['system', 'content', 'business', 'communication'].includes(categoryId)) {
+                    category.classList.add('expanded');
+                    const categoryItems = document.getElementById(`category-${categoryId}`);
+                    if (categoryItems) {
+                        categoryItems.classList.remove('collapsed');
+                    }
+                    const icon = category.querySelector('.category-icon');
+                    if (icon) {
+                        icon.classList.remove('fa-chevron-right');
+                        icon.classList.add('fa-chevron-down');
+                    }
+                }
+            });
+            
+            // Navigation and section handling
+            const navItems = document.querySelectorAll('.nav-item[href^="#"]');
+            const sections = document.querySelectorAll('.content-section');
+            const sectionTitle = document.getElementById('sectionTitle');
+            const chatContainer = document.getElementById('chatContainer');
+            const messagesSection = document.getElementById('messagesSection');
+            
+            // Nav item click handler
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all nav items
+                    navItems.forEach(i => i.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Hide all sections (including messagesSection)
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    
+                    // Hide messages section and chat container by default
+                    if (messagesSection) {
+                        messagesSection.classList.remove('active');
+                        // Xóa class khỏi body
+                        document.body.classList.remove('messages-active');
+                    }
+                    if (chatContainer) {
+                        chatContainer.style.display = 'none';
+                    }
+                    
+                    // Get href
+                    const href = this.getAttribute('href');
+                    if (!href || href === '#' || href.length < 2) {
+                        console.warn('Nav item không có href hợp lệ:', this.id, href);
+                        return;
+                    }
+                    
+                    // Special handling for Messages
+                    if (href === '#messages') {
+                        // Hide admin header when in messages section
+                        const adminHeader = document.getElementById('adminHeader');
+                        if (adminHeader) {
+                            adminHeader.style.display = 'none';
+                        }
+                        
+                        // Hide all other sections first
+                        sections.forEach(section => {
+                            if (section.id !== 'messagesSection') {
+                                section.classList.remove('active');
+                            }
+                        });
+                        
+                        // Show messages section and chat container
+                        const messagesSection = document.getElementById('messagesSection');
+                        if (messagesSection) {
+                            messagesSection.classList.add('active');
+                            // Thêm class vào body để CSS có thể target dễ dàng hơn
+                            document.body.classList.add('messages-active');
+                            
+                            // Debug: Kiểm tra và loại bỏ padding/margin trực tiếp
+                            const mainContent = document.querySelector('.main-content');
+                            const colElement = document.querySelector('.col.p-0:not(.col-auto)');
+                            const rowElement = document.querySelector('.row.g-0');
+                            const containerFluid = document.querySelector('.container-fluid.px-0');
+                            const contentWrapper = document.querySelector('.content-wrapper');
+                            
+                            // QUAN TRỌNG: Container-fluid không có padding
+                            if (containerFluid) {
+                                containerFluid.style.paddingLeft = '0';
+                                containerFluid.style.paddingRight = '0';
+                                containerFluid.style.padding = '0';
+                            }
+                            
+                            // QUAN TRỌNG: Row không có margin và gutter
+                            if (rowElement) {
+                                rowElement.style.marginLeft = '0';
+                                rowElement.style.marginRight = '0';
+                                rowElement.style.setProperty('--bs-gutter-x', '0', 'important');
+                                rowElement.style.setProperty('--bs-gutter-y', '0', 'important');
+                            }
+                            
+                            // QUAN TRỌNG: Col phải không có padding
+                            if (colElement) {
+                                colElement.style.padding = '0';
+                                colElement.style.paddingLeft = '0';
+                                colElement.style.paddingRight = '0';
+                                colElement.style.paddingTop = '0';
+                                colElement.style.paddingBottom = '0';
+                            }
+                            
+                            // QUAN TRỌNG: Main-content phải có margin-left: 280px và padding: 0
+                            // Sử dụng setProperty với important để override tất cả CSS
+                            if (mainContent) {
+                                mainContent.style.setProperty('padding', '0', 'important');
+                                mainContent.style.setProperty('padding-left', '0', 'important');
+                                mainContent.style.setProperty('padding-right', '0', 'important');
+                                mainContent.style.setProperty('padding-top', '0', 'important');
+                                mainContent.style.setProperty('padding-bottom', '0', 'important');
+                                mainContent.style.setProperty('margin-left', '280px', 'important');
+                                mainContent.style.setProperty('width', 'calc(100% - 280px)', 'important');
+                            }
+                            
+                            // QUAN TRỌNG: Content-wrapper không có padding
+                            if (contentWrapper) {
+                                contentWrapper.style.padding = '0';
+                                contentWrapper.style.paddingLeft = '0';
+                                contentWrapper.style.paddingRight = '0';
+                                contentWrapper.style.margin = '0';
+                                contentWrapper.style.marginLeft = '0';
+                                contentWrapper.style.marginRight = '0';
+                            }
+                            
+                            // QUAN TRỌNG: MessagesSection không có margin, bắt đầu từ cạnh trái của main-content
+                            if (messagesSection) {
+                                messagesSection.style.marginLeft = '0';
+                                messagesSection.style.marginRight = '0';
+                                messagesSection.style.marginTop = '0';
+                                messagesSection.style.marginBottom = '0';
+                                messagesSection.style.padding = '0';
+                                messagesSection.style.paddingLeft = '0';
+                                messagesSection.style.paddingRight = '0';
+                                messagesSection.style.width = '100%';
+                            }
+                            
+                            // Debug: Log để kiểm tra SAU KHI đã set
+                            setTimeout(() => {
+                                console.log('🔍 Debug messages section spacing (sau khi set):');
+                                if (mainContent) {
+                                    const computed = window.getComputedStyle(mainContent);
+                                    console.log('Main-content padding-left:', computed.paddingLeft);
+                                    console.log('Main-content margin-left:', computed.marginLeft);
+                                    if (parseFloat(computed.paddingLeft) > 0) {
+                                        console.warn('⚠️ WARNING: padding-left vẫn không phải 0! Đang thử lại...');
+                                        // Thử nhiều cách để override
+                                        mainContent.style.setProperty('padding-left', '0', 'important');
+                                        mainContent.style.paddingLeft = '0';
+                                        // Thử lại sau một chút
+                                        setTimeout(() => {
+                                            mainContent.style.setProperty('padding-left', '0', 'important');
+                                            mainContent.style.paddingLeft = '0';
+                                        }, 50);
+                                    }
+                                }
+                                if (colElement) {
+                                    const computed = window.getComputedStyle(colElement);
+                                    console.log('Col padding-left:', computed.paddingLeft);
+                                }
+                            }, 100);
+                            if (rowElement) {
+                                rowElement.style.marginLeft = '0';
+                                rowElement.style.marginRight = '0';
+                            }
+                            if (containerFluid) {
+                                containerFluid.style.paddingLeft = '0';
+                                containerFluid.style.paddingRight = '0';
+                            }
+                        }
+                        if (chatContainer) {
+                            chatContainer.style.display = 'flex';
+                        }
+                        
+                        // Load admin info for top header
+                        loadAdminInfoForMessages();
+                        return;
+                    }
+                    
+                    // Show admin header for other sections
+                    const adminHeader = document.getElementById('adminHeader');
+                    if (adminHeader) {
+                        adminHeader.style.display = 'block';
+                    }
+                    
+                    // Ensure messages section and chat container are hidden for other sections
+                    if (messagesSection) {
+                        messagesSection.classList.remove('active');
+                        // Xóa class khỏi body
+                        document.body.classList.remove('messages-active');
+                    }
+                    if (chatContainer) {
+                        chatContainer.style.display = 'none';
+                    }
+                    
+                    // Show selected section
+                    const targetId = href.substring(1) + 'Section';
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    } else {
+                        console.warn('Không tìm thấy section với ID:', targetId);
+                    }
+                    
+                    // Update section title
+                    if (sectionTitle) {
+                        const spanText = this.querySelector('span:not(.nav-badge)');
+                        sectionTitle.textContent = spanText ? spanText.textContent.trim() : this.textContent.trim();
+                    }
+                    
+                    // Load data when sections are shown
+                    if (this.id === 'navRatings' && typeof loadRatings === 'function') {
+                        loadRatings();
+                    }
+                    
+                    if (this.id === 'navPromotions' && window.promotionManager) {
+                        window.promotionManager.loadPromotions();
+                    }
+                    
+                    if ((this.id === 'navStatistics' || this.id === 'navDashboard') && typeof loadDashboard === 'function') {
+                        loadDashboard();
+                    }
+                });
+            });
+            
+            // Load admin info for messages header
+            function loadAdminInfoForMessages() {
+                const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+                if (user) {
+                    const adminEmailDisplay = document.getElementById('adminEmailDisplay');
+                    const adminAvatarSmall = document.getElementById('adminAvatarSmall');
+                    
+                    if (adminEmailDisplay) {
+                        adminEmailDisplay.textContent = user.email || user.ten_tai_khoan || 'admin@example.com';
+                    }
+                    
+                    if (adminAvatarSmall && user.anh_dai_dien) {
+                        const img = document.createElement('img');
+                        img.src = user.anh_dai_dien;
+                        img.alt = user.ten_hien_thi || 'Admin';
+                        adminAvatarSmall.innerHTML = '';
+                        adminAvatarSmall.appendChild(img);
+                    }
+                }
+            }
+            
+            // Load admin info on page load if messages section is active
+            if (document.getElementById('messagesSection')?.classList.contains('active')) {
+                loadAdminInfoForMessages();
+            }
+        });
+    </script>
+   <!-- Messages Section - Chứa chat container -->
+   <div id="messagesSection" class="content-section">
+     <!-- Chat Container - Chỉ hiển thị khi chọn "Tin nhắn" -->
+     <div class="admin-chat-container" id="chatContainer" style="display: none;">
+       <!-- Top Header for Messages - Tích hợp vào chat container -->
+       <div class="messages-top-header">
+         <div class="messages-header-left">
+           <h3><i class="fas fa-comments me-2"></i>Tin nhắn</h3>
+         </div>
+         <div class="messages-header-right">
+           <button class="btn-notification" id="messagesNotificationBell" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+             <i class="fas fa-bell"></i>
+             <span class="notification-badge" id="messagesNotificationBadge" style="display: none;">0</span>
+           </button>
+           <span class="admin-email" id="adminEmailDisplay"></span>
+           <div class="admin-avatar-small" id="adminAvatarSmall">
+             <i class="fas fa-user"></i>
+           </div>
+         </div>
+       </div>
+       
+       <!-- Chat Content Wrapper -->
+       <div class="chat-content-wrapper">
+         <!-- Sidebar: Danh sách người dùng -->
+         <div class="chat-sidebar">
+           <div class="chat-sidebar-header">
+             <div class="sidebar-header-content">
+               <button class="btn-back-sidebar" id="backToSidebar" title="Quay lại" style="display: none;">
+                 <i class="fas fa-chevron-left"></i>
+               </button>
+               <h4><i class="fas fa-users me-2"></i>Danh sách người dùng</h4>
+             </div>
+             <button class="btn-toggle-sidebar" id="toggleSidebar" title="Ẩn/Hiện danh sách">
+               <i class="fas fa-chevron-left"></i>
+             </button>
+           </div>
+      
+      <!-- Tìm kiếm người dùng -->
+      <div class="chat-search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="userSearchInput" placeholder="Tìm kiếm người dùng...">
+        <button class="btn-clear-search" id="clearSearchBtn" style="display: none;">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- Danh sách người dùng -->
+      <div class="user-list-container">
+        <ul id="userList" class="user-list-items">
+          <li class="user-list-empty">
+            <i class="fas fa-user-friends"></i>
+            <p>Chưa có người dùng nào</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Main: Khung chat -->
+    <div class="chat-main">
+      <!-- Nút hiển thị lại sidebar khi bị ẩn -->
+      <button class="btn-show-sidebar" id="showSidebarBtn" title="Hiển thị danh sách" style="display: none;">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      
+      <!-- Header chat -->
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar" id="chatAvatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="chat-user-info">
+            <h5 id="chatWith">Chưa chọn người để chat</h5>
+            <span class="chat-status" id="chatStatus">Chọn một người dùng để bắt đầu</span>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button class="btn-chat-action" id="chatInfoBtn" title="Thông tin người dùng" style="display: none;">
+            <i class="fas fa-info-circle"></i>
+          </button>
+          <button class="btn-chat-action" id="closeChat" title="Đóng chat">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Khung tin nhắn -->
+      <div class="chat-messages-container">
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-empty-state">
+            <i class="fas fa-comment-dots"></i>
+            <p>Chọn một người dùng để bắt đầu trò chuyện</p>
+          </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator" style="display: none;">
+          <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <span>Đang soạn tin nhắn...</span>
+        </div>
+      </div>
+
+      <!-- Input area -->
+      <div class="chat-input-container">
+        <div class="chat-input-toolbar">
+          <button class="btn-toolbar" id="attachFileBtn" title="Đính kèm file" style="display: none;">
+            <i class="fas fa-paperclip"></i>
+          </button>
+          <button class="btn-toolbar" id="emojiBtn" title="Emoji" style="display: none;">
+            <i class="far fa-smile"></i>
+          </button>
+        </div>
+        <div class="chat-input-wrapper">
+          <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." disabled>
+          <button class="btn-send" id="sendMessageBtn" disabled>
+            <i class="fas fa-paper-plane"></i>
+            <span>Gửi</span>
+          </button>
+        </div>
+        <div class="chat-quick-replies" id="quickReplies" style="display: none;">
+          <button class="quick-reply-btn" data-reply="Xin chào! Tôi có thể giúp gì cho bạn?">Xin chào! Tôi có thể giúp gì cho bạn?</button>
+          <button class="quick-reply-btn" data-reply="Cảm ơn bạn đã liên hệ!">Cảm ơn bạn đã liên hệ!</button>
+          <button class="quick-reply-btn" data-reply="Vui lòng đợi một chút, tôi đang kiểm tra...">Vui lòng đợi một chút...</button>
+        </div>
+         </div>
+       </div>
+     </div>
+   </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/chat-admin.js"></script>
+<script src="js/admin/admin_notifications.js"></script>
+
+<script>
+// Ratings Management Functions
+let currentRatingFilters = {
+    tour: '',
+    rating: ''
+};
+
+// Tải danh sách tour cho bộ lọc
+async function loadToursForFilter() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${CONFIG.API_BASE_URL}/tours`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            if (result.status === 'success') {
+                const tourSelect = document.getElementById('tourFilter');
+                if (tourSelect) {
+                    tourSelect.innerHTML = '<option value="">Tất cả tour</option>';
+                    result.data.tours.forEach(tour => {
+                        const option = document.createElement('option');
+                        option.value = tour.Ma_tour;
+                        option.textContent = tour.Ten_tour;
+                        tourSelect.appendChild(option);
+                    });
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Lỗi khi tải danh sách tour:', error);
+    }
+}
+
+async function loadRatings() {
+    try {
+        console.log('🔍 Loading ratings...');
+        
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Chưa đăng nhập');
+        }
+        
+        // Xây dựng URL với filters
+        let url = `${CONFIG.API_BASE_URL}/ratings/all`;
+        const queryParams = [];
+        
+        if (currentRatingFilters.tour) {
+            queryParams.push(`tour=${currentRatingFilters.tour}`);
+        }
+        if (currentRatingFilters.rating) {
+            queryParams.push(`rating=${currentRatingFilters.rating}`);
+        }
+        
+        if (queryParams.length > 0) {
+            url += '?' + queryParams.join('&');
+        }
+        
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Không thể tải đánh giá');
+        }
+        
+        const data = await response.json();
+        console.log('📊 Ratings data:', data);
+        
+        if (data.status === 'success') {
+            displayRatings(data.data.ratings);
+            updateStatistics(data.data.ratings);
+        } else {
+            throw new Error(data.message || 'Lỗi tải dữ liệu');
+        }
+    } catch (error) {
+        console.error('❌ Lỗi load ratings:', error);
+        document.getElementById('ratingsList').innerHTML = `
+            <div class="text-center text-danger py-4">
+                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                <p>Không thể tải đánh giá: ${error.message}</p>
+                <button class="btn btn-primary" onclick="loadRatings()">Thử lại</button>
+            </div>
+        `;
+    }
+}
+
+function displayRatings(ratings) {
+    const ratingsList = document.getElementById('ratingsList');
+    
+    if (!ratings || ratings.length === 0) {
+        ratingsList.innerHTML = `
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-star fa-2x mb-3"></i>
+                <p>Chưa có đánh giá nào</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Nhóm đánh giá theo tour để hiển thị nút "Xóa theo tour"
+    const ratingsByTour = {};
+    ratings.forEach(rating => {
+        const tourId = rating.Ma_tour;
+        if (!ratingsByTour[tourId]) {
+            ratingsByTour[tourId] = {
+                tourName: rating.Ten_tour || 'Tour',
+                ratings: []
+            };
+        }
+        ratingsByTour[tourId].ratings.push(rating);
+    });
+
+    let ratingsHTML = '';
+    Object.keys(ratingsByTour).forEach(tourId => {
+        const tourGroup = ratingsByTour[tourId];
+        
+        ratingsHTML += `
+            <div class="mb-4 p-3 border rounded" style="background-color: #f8f9fa;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-map-marker-alt me-2"></i>${tourGroup.tourName}
+                    </h5>
+                    <button class="btn btn-danger btn-sm" onclick="deleteRatingsByTour('${tourId}', '${tourGroup.tourName.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-trash me-1"></i> Xóa theo tour
+                    </button>
+                </div>
+        `;
+        
+        tourGroup.ratings.forEach((rating, index) => {
+            const ratingDate = new Date(rating.Ngay_danh_gia).toLocaleDateString('vi-VN');
+            const stars = generateStarsHTML(rating.So_sao);
+            
+            ratingsHTML += `
+                <div class="rating-item border-bottom pb-3 mb-3 ${index < tourGroup.ratings.length - 1 ? 'border-bottom' : ''}">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center mb-2">
+                                <strong class="me-3">${rating.Ten_khach_hang || 'Khách hàng'}</strong>
+                                <div class="text-warning me-3">${stars}</div>
+                                <span class="badge bg-primary">${rating.So_sao} sao</span>
+                            </div>
+                            <p class="mb-2">${rating.Binh_luan || 'Không có bình luận'}</p>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>${ratingDate}
+                            </small>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="rating-details mb-2">
+                                <small class="text-muted d-block">Dịch vụ: ${rating.Diem_dich_vu || 0}/5</small>
+                                <small class="text-muted d-block">Hướng dẫn viên: ${rating.Diem_huong_dan_vien || 0}/5</small>
+                                <small class="text-muted d-block">Phương tiện: ${rating.Diem_phuong_tien || 0}/5</small>
+                                <small class="text-muted d-block">Giá cả: ${rating.Diem_gia_ca || 0}/5</small>
+                            </div>
+                            <button class="btn btn-danger btn-sm" onclick="deleteRating('${rating.Id_review || rating.Ma_danh_gia}')">
+                                <i class="fas fa-trash me-1"></i> Xóa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        ratingsHTML += `</div>`;
+    });
+    
+    ratingsList.innerHTML = ratingsHTML;
+}
+
+// Xóa đánh giá riêng lẻ
+async function deleteRating(ratingId) {
+    if (!confirm('Bạn có chắc chắn muốn xóa đánh giá này?')) {
+        return;
+    }
+    
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${CONFIG.API_BASE_URL}/ratings/${ratingId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.status === 'success') {
+            alert('Xóa đánh giá thành công!');
+            loadRatings();
+        } else {
+            throw new Error(data.message || 'Lỗi khi xóa đánh giá');
+        }
+    } catch (error) {
+        console.error('Lỗi khi xóa đánh giá:', error);
+        alert('Lỗi khi xóa đánh giá: ' + error.message);
+    }
+}
+
+// Xóa tất cả đánh giá của một tour
+async function deleteRatingsByTour(tourId, tourName) {
+    if (!confirm(`Bạn có chắc chắn muốn xóa TẤT CẢ đánh giá của tour "${tourName}"?\n\nHành động này không thể hoàn tác!`)) {
+        return;
+    }
+    
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${CONFIG.API_BASE_URL}/ratings/tour/${tourId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.status === 'success') {
+            alert(`Đã xóa ${data.data.deletedCount || 0} đánh giá của tour "${tourName}"!`);
+            loadRatings();
+        } else {
+            throw new Error(data.message || 'Lỗi khi xóa đánh giá');
+        }
+    } catch (error) {
+        console.error('Lỗi khi xóa đánh giá theo tour:', error);
+        alert('Lỗi khi xóa đánh giá: ' + error.message);
+    }
+}
+
+function updateStatistics(ratings) {
+    if (!ratings || ratings.length === 0) {
+        document.getElementById('totalRatings').textContent = '0';
+        document.getElementById('averageRating').textContent = '0.0';
+        document.getElementById('fiveStarRatings').textContent = '0';
+        document.getElementById('recentRatings').textContent = '0';
+        return;
+    }
+
+    // Total ratings
+    document.getElementById('totalRatings').textContent = ratings.length;
+
+    // Average rating
+    const average = ratings.reduce((sum, rating) => sum + rating.So_sao, 0) / ratings.length;
+    document.getElementById('averageRating').textContent = average.toFixed(1);
+
+    // Five star ratings
+    const fiveStar = ratings.filter(rating => rating.So_sao === 5).length;
+    document.getElementById('fiveStarRatings').textContent = fiveStar;
+
+    // Recent ratings (last 7 days)
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const recent = ratings.filter(rating => new Date(rating.Ngay_danh_gia) > oneWeekAgo).length;
+    document.getElementById('recentRatings').textContent = recent;
+}
+
+function generateStarsHTML(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    let stars = '';
+    
+    // Sao đầy
+    for (let i = 0; i < fullStars; i++) {
+        stars += '<i class="fas fa-star"></i>';
+    }
+    
+    // Sao nửa
+    if (hasHalfStar) {
+        stars += '<i class="fas fa-star-half-alt"></i>';
+    }
+    
+    // Sao rỗng
+    for (let i = 0; i < emptyStars; i++) {
+        stars += '<i class="far fa-star"></i>';
+    }
+    
+    return stars;
+}
+
+// Load ratings when ratings section is shown
+document.addEventListener('DOMContentLoaded', function() {
+    // Load tours for filter
+    loadToursForFilter();
+    
+    // Add event listener for tour filter
+    const tourFilter = document.getElementById('tourFilter');
+    if (tourFilter) {
+        tourFilter.addEventListener('change', function() {
+            currentRatingFilters.tour = this.value;
+            loadRatings();
+        });
+    }
+    
+    // Add event listener for ratings filter
+    const ratingFilter = document.getElementById('ratingFilter');
+    if (ratingFilter) {
+        ratingFilter.addEventListener('change', function() {
+            currentRatingFilters.rating = this.value;
+            loadRatings();
+        });
+    }
+});
+</script>
+
+    <!-- Modal Chi tiết Booking -->
+    <div class="modal fade" id="bookingDetailModal" tabindex="-1" aria-labelledby="bookingDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingDetailModalLabel">
+                        <i class="fas fa-calendar-check me-2"></i>Chi tiết đặt tour
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="bookingDetailContent">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <a href="#" id="viewBookingLink" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-external-link-alt me-2"></i>Xem chi tiết đầy đủ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Quản lý Lịch trình Tour -->
+    <div class="modal fade" id="itineraryModal" tabindex="-1" aria-labelledby="itineraryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="itineraryModalLabel">
+                        <i class="fas fa-route me-2"></i>Quản lý Lịch trình Tour
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <h6 id="itineraryTourName"></h6>
+                        <p class="text-muted mb-3">Số ngày: <span id="itineraryTourDays"></span></p>
+                        <div class="d-flex gap-2 mb-3">
+                            <button class="btn btn-success btn-sm" onclick="generateItineraryDays()">
+                                <i class="fas fa-magic me-1"></i>Tự động tạo ngày
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="addItineraryDay()">
+                                <i class="fas fa-plus me-1"></i>Thêm ngày mới
+                            </button>
+                        </div>
+                    </div>
+                    <div id="itineraryListContainer">
+                        <!-- Danh sách các ngày sẽ được load ở đây -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
