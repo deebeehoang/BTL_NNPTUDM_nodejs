@@ -204,11 +204,12 @@ document.addEventListener("DOMContentLoaded", () => {
   async function renderUserList() {
     try {
       const res = await fetch(`/api/chat/users/list`);
-      const users = await res.json();
+      const json = await res.json();
+      const users = json.data || json;
       allUsers = users;
       userListElement.innerHTML = "";
       
-      if (users.length === 0) {
+      if (!Array.isArray(users) || users.length === 0) {
         userListElement.innerHTML = `
           <li class="user-list-empty">
             <i class="fas fa-user-friends"></i>
@@ -353,8 +354,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sau đó tải từ API để đồng bộ
     try {
       const response = await fetch(`/api/chat/history/${userId}`);
-      const history = await response.json();
-      if (history.length > 0) {
+      const historyJson = await response.json();
+      const history = historyJson.data || historyJson;
+      if (Array.isArray(history) && history.length > 0) {
         // Merge với localStorage
         mergeAdminChatWithApi(userId, history);
       }

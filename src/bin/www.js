@@ -126,15 +126,15 @@ io.on("connection", (socket) => {
       dbReceiverId = onlineAdminIds[0] || 'admin01';
     }
     const sql = `INSERT INTO Tin_nhan (Id_nguoi_gui, Id_nguoi_nhan, Noi_dung, Thoi_gian, Da_doc) VALUES (?, ?, ?, NOW(), 0)`;
-    db.query(sql, [Nguoi_gui, dbReceiverId, Noi_dung], (err, result) => {
-        if (err) {
-            console.error('❌ Lỗi khi lưu tin nhắn vào DB:', err);
-            socket.emit('messageError', { message: 'Không thể lưu tin nhắn vào cơ sở dữ liệu.' });
-        } else {
-            console.log('✅ Tin nhắn đã được lưu vào DB');
-            socket.emit('messageSent', { success: true });
-        }
-    });
+    db.query(sql, [Nguoi_gui, dbReceiverId, Noi_dung])
+      .then(() => {
+          console.log('✅ Tin nhắn đã được lưu vào DB');
+          socket.emit('messageSent', { success: true });
+      })
+      .catch((err) => {
+          console.error('❌ Lỗi khi lưu tin nhắn vào DB:', err);
+          socket.emit('messageError', { message: 'Không thể lưu tin nhắn vào cơ sở dữ liệu.' });
+      });
   });
 
   // Gõ phím (typing indicator)
